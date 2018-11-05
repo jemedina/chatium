@@ -4,7 +4,7 @@
       <mat-card-title>Wellcome to chatium</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-tab-group>
+      <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Login">
           
             <mat-form-field class="form-field-fullwidth">
@@ -13,12 +13,34 @@
             <mat-form-field class="form-field-fullwidth">
             <input matInput placeholder="Password">
             </mat-form-field>
+
             <button mat-button>Login</button>
 
           </mat-tab>
-        <mat-tab label="Register">
-          <h1>Some more tab content</h1>
-          <p>...</p>
+        <mat-tab label="Sign up">
+
+
+            <mat-form-field class="form-field-fullwidth">
+            <input matInput placeholder="Username">
+            </mat-form-field>
+
+            <mat-form-field class="form-field-fullwidth">
+            <input matInput placeholder="Email" type="email">
+            </mat-form-field>
+
+            <mat-form-field class="form-field-fullwidth">
+            <input matInput placeholder="Rewrite Email" type="email">
+            </mat-form-field>
+
+            <mat-form-field class="form-field-fullwidth">
+            <input matInput placeholder="Password" type="password">
+            </mat-form-field>
+
+            <mat-form-field class="form-field-fullwidth">
+            <input matInput placeholder="Rewrite Password" type="password">
+            </mat-form-field>
+                
+            <button mat-button>Register</button>
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>
