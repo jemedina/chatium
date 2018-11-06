@@ -8,13 +8,13 @@
         <mat-tab label="Login">
           
             <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Username">
+            <input matInput [(ngModel)]="username" placeholder="Username">
             </mat-form-field>
             <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Password">
+            <input matInput [(ngModel)]="password" placeholder="Password" type="password">
             </mat-form-field>
 
-            <button mat-button>Login</button>
+            <button mat-button (click)="doLogin()">Login</button>
 
           </mat-tab>
         <mat-tab label="Sign up">
