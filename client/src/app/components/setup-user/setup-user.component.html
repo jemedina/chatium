@@ -10,36 +10,36 @@
             <ng-template matStepLabel>Your language</ng-template>
             <div class="row fields-container">
               <div class="col col-sm-12 col-md-4">
-                <h4>Select your native language</h4>
+                <h5>Select your native language</h5>
                 <mat-form-field class="form-field-fullwidth">
                   <mat-select placeholder="Native Language">
-                    <mat-option>
-                      English
-                    </mat-option>
-                    <mat-option>
-                      Spanish
-                    </mat-option>
-                    <mat-option>
-                      French
-                    </mat-option>
-                    <mat-option>
-                      Japanese
+                    <mat-option  *ngFor="let language of supportedLanguages" [value]="language.code">
+                      {{language.name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
               <div class="col col-sm-12 col-md-4">
-                <h4>Select your country</h4>
+                <h5>Select your country</h5>
                 <mat-form-field class="form-field-fullwidth">
-                  <mat-select placeholder="Native Language">
-                    <mat-option  *ngFor="let language of supportedLanguages" [value]="language.value">
-                      {{language}}
+                  <mat-select placeholder="Country">
+                    <mat-option  *ngFor="let country of supportedCountries" [value]="country.code">
+                      <img class="country-flag-img" [src]="country.icon">
+                      <span class="country-name">{{country.name}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
 
               <div class="col col-sm-12 col-md-4">
+                  <h5>Add the languages you speak</h5>
+                  <mat-form-field class="form-field-fullwidth">
+                    <mat-select placeholder="Language">
+                      <mat-option  *ngFor="let language of supportedLanguages" [value]="language.code">
+                        {{language.name}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
               </div>
             </div>
             <div>

@@ -13,7 +13,7 @@ export class SetupUserComponent implements OnInit {
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
 
-  supportedLanguages: string[];
+  supportedLanguages: any[];
   supportedCountries: any[];
 
   /*Supported languages*/

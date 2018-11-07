@@ -5,21 +5,24 @@ import { Injectable } from '@angular/core';
 })
 export class CountryLanguageService {
   private supportedLanguages = [
-    "English",
-    "Spanish",
-    "French"
+    { name: "English", code: 'en' },
+    { name: "Spanish", code: 'es' },
+    { name: "French", code: 'fr' }
   ];
 
   private supportedCountried = [
     {
       name: "United States",
-      icon: ''
-    },{
+      icon: '/assets/countryflags/us.png',
+      code: 'us'
+    }, {
       name: "México",
-      icon: ''
-    },{
-      name: "France",
-      icon: ''
+      icon: '/assets/countryflags/mx.png',
+      code: 'mx'
+    }, {
+      name: "Spain",
+      icon: '/assets/countryflags/es.png',
+      code: 'es'
     }
   ];
   constructor() { }

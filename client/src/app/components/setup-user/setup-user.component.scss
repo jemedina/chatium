@@ -1,9 +1,11 @@
-.setup-container {
-    margin-left: 40px;
-    margin-right: 40px;
-    margin-top: 120px;
-    @media screen and (max-width: 640px){
-        margin-left: 0;
-        margin-right: 0;
-    }
+.container {
+    margin-top: 80px;
+}
+
+.country-flag-img {
+    width: 30px;
+}
+
+.country-name {
+    margin-left: 10px;
 }
