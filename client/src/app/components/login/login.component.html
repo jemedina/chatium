@@ -3,12 +3,12 @@
     <mat-card-header>
       <mat-card-title>Wellcome to chatium</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content *ngIf="!waitingSessionResponse">
       <mat-tab-group mat-stretch-tabs>
         <mat-tab label="Login">
           
             <mat-form-field class="form-field-fullwidth">
-            <input matInput [(ngModel)]="username" placeholder="Username">
+            <input matInput [(ngModel)]="email" placeholder="Email">
             </mat-form-field>
             <mat-form-field class="form-field-fullwidth">
             <input matInput [(ngModel)]="password" placeholder="Password" type="password">
@@ -19,30 +19,26 @@
           </mat-tab>
         <mat-tab label="Sign up">
 
-
+          <form [formGroup]="registerForm" (ngSubmit)="doCreateAccount()">
             <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Username">
+            <input matInput placeholder="Name" formControlName="name">
             </mat-form-field>
 
             <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Email" type="email">
+            <input matInput placeholder="Email" type="email" formControlName="email">
             </mat-form-field>
 
             <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Rewrite Email" type="email">
+              <input matInput placeholder="Password" type="password" formControlName="password">
             </mat-form-field>
 
-            <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Password" type="password">
-            </mat-form-field>
-
-            <mat-form-field class="form-field-fullwidth">
-            <input matInput placeholder="Rewrite Password" type="password">
-            </mat-form-field>
-                
             <button mat-button>Register</button>
+          </form>
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>
+    <div class="center">
+      <mat-progress-spinner mode="indeterminate" *ngIf="waitingSessionResponse"></mat-progress-spinner>
+    </div>
   </mat-card>
 </div>

@@ -17,15 +17,23 @@ console.log("initializing server");
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
+
 app.post('/login', function (req, res) {
-    var user_name=req.body.user;
+    var email=req.body.email;
     var password=req.body.password;
     var stat = 0;
-    if(user_name == 'admin' && password == 'admin'){
+    if(email == 'admin' && password == 'admin'){
       stat = 1;
     }
-    console.log("User session started name = "+user_name+", password is "+password);
+    console.log("User session started name = "+email+", password is "+password);
     res.send(JSON.stringify({ status: stat, error: null }));
+});
+
+app.post('/regist', function (req, res) {
+  console.log(req.body);
+  setTimeout(function() {
+    res.send(JSON.stringify({ status: 1, error: null }));  
+  },2000);
 });
 
 app.listen(3000, function () {

@@ -1,0 +1,76 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Settup your account</mat-card-title>
+    </mat-card-header>
+    <mat-card-content *ngIf="!waitingSessionResponse">
+      <mat-horizontal-stepper [linear]="isLinear" #stepper>
+        <mat-step [stepControl]="firstFormGroup">
+          <form [formGroup]="firstFormGroup">
+            <ng-template matStepLabel>Your language</ng-template>
+            <div class="row fields-container">
+              <div class="col col-sm-12 col-md-4">
+                <h4>Select your native language</h4>
+                <mat-form-field class="form-field-fullwidth">
+                  <mat-select placeholder="Native Language">
+                    <mat-option>
+                      English
+                    </mat-option>
+                    <mat-option>
+                      Spanish
+                    </mat-option>
+                    <mat-option>
+                      French
+                    </mat-option>
+                    <mat-option>
+                      Japanese
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col col-sm-12 col-md-4">
+                <h4>Select your country</h4>
+                <mat-form-field class="form-field-fullwidth">
+                  <mat-select placeholder="Native Language">
+                    <mat-option  *ngFor="let language of supportedLanguages" [value]="language.value">
+                      {{language}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col col-sm-12 col-md-4">
+              </div>
+            </div>
+            <div>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup">
+          <form [formGroup]="secondFormGroup">
+            <ng-template matStepLabel>Fill out your address</ng-template>
+            <mat-form-field>
+              <input matInput placeholder="Address" formControlName="secondCtrl" required>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Done</ng-template>
+          You are now done.
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </mat-card-content>
+    <div class="center">
+      <mat-progress-spinner mode="indeterminate" *ngIf="waitingSessionResponse"></mat-progress-spinner>
+    </div>
+  </mat-card>
+</div>
