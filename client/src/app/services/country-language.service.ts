@@ -25,6 +25,16 @@ export class CountryLanguageService {
       code: 'es'
     }
   ];
+
+  private languageLevelValues = 
+    {
+      1: "Newbie",
+      2: "Beginner",
+      3: "Intermediate",
+      4: "Advanced",
+      5: "Teacher"
+    };
+  
   constructor() { }
 
   getSupportedLanguages() {
@@ -33,5 +43,9 @@ export class CountryLanguageService {
 
   getSupportedCountries() {
     return this.supportedCountried;
+  }
+
+  getLanguageLevelValues() {
+    return this.languageLevelValues;
   }
 }

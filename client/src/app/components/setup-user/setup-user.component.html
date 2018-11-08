@@ -7,39 +7,28 @@
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
         <mat-step [stepControl]="firstFormGroup">
           <form [formGroup]="firstFormGroup">
-            <ng-template matStepLabel>Your language</ng-template>
+            <ng-template matStepLabel>Native language</ng-template>
             <div class="row fields-container">
-              <div class="col col-sm-12 col-md-4">
+              <div class="col col-sm-12 col-md-4 offset-md-1 offset-md-0">
                 <h5>Select your native language</h5>
                 <mat-form-field class="form-field-fullwidth">
                   <mat-select placeholder="Native Language">
-                    <mat-option  *ngFor="let language of supportedLanguages" [value]="language.code">
+                    <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
                       {{language.name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
-              <div class="col col-sm-12 col-md-4">
+              <div class="col col-sm-12 col-md-4 offset-md-1 offset-md-0">
                 <h5>Select your country</h5>
                 <mat-form-field class="form-field-fullwidth">
                   <mat-select placeholder="Country">
-                    <mat-option  *ngFor="let country of supportedCountries" [value]="country.code">
+                    <mat-option *ngFor="let country of supportedCountries" [value]="country.code">
                       <img class="country-flag-img" [src]="country.icon">
                       <span class="country-name">{{country.name}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-              </div>
-
-              <div class="col col-sm-12 col-md-4">
-                  <h5>Add the languages you speak</h5>
-                  <mat-form-field class="form-field-fullwidth">
-                    <mat-select placeholder="Language">
-                      <mat-option  *ngFor="let language of supportedLanguages" [value]="language.code">
-                        {{language.name}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
               </div>
             </div>
             <div>
@@ -49,10 +38,29 @@
         </mat-step>
         <mat-step [stepControl]="secondFormGroup">
           <form [formGroup]="secondFormGroup">
-            <ng-template matStepLabel>Fill out your address</ng-template>
-            <mat-form-field>
-              <input matInput placeholder="Address" formControlName="secondCtrl" required>
-            </mat-form-field>
+            <ng-template matStepLabel>Secondary</ng-template>
+
+            <h5>Add the seconday languages that you speak </h5>
+            <div class="row fields-container">
+              <div class="col col-md-3 col-sm-12 offset-md-3 offset-sm-0">
+                <mat-form-field class="form-field-fullwidth">
+                  <mat-select placeholder="Language">
+                    <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
+                      <span>{{language.name}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col col-md-2 col-sm-3">
+                <mat-slider min="1" max="5" step="1" value="1" formControlName="newLanguageLevel"></mat-slider>
+              </div>
+              <div class="col col-md-1 col-sm-3">
+                <label>Level: <strong>{{languageLevelValues[secondFormGroup.controls.newLanguageLevel.value]}}</strong></label>
+              </div>
+              <div class="col col-md-1 col-sm-3">
+                <button mat-fab color="accent" (click)="printForm()">Add</button>
+              </div>
+            </div>
             <div>
               <button mat-button matStepperPrevious>Back</button>
               <button mat-button matStepperNext>Next</button>
@@ -60,12 +68,27 @@
           </form>
         </mat-step>
         <mat-step>
-          <ng-template matStepLabel>Done</ng-template>
-          You are now done.
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button (click)="stepper.reset()">Reset</button>
-          </div>
+          <ng-template matStepLabel>Learning</ng-template>
+          <form [formGroup]="lastFormGroup">
+            <ng-template matStepLabel>Secondary</ng-template>
+
+            <h5>Select the language you are currently learning</h5>
+            <div class="row fields-container">
+              <div class="col col-md-4 col-sm-12 offset-md-4 offset-sm-0">
+                <mat-form-field class="form-field-fullwidth">
+                  <mat-select placeholder="Language">
+                    <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
+                      <span>{{language.name}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Finish</button>
+            </div>
+          </form>
         </mat-step>
       </mat-horizontal-stepper>
     </mat-card-content>

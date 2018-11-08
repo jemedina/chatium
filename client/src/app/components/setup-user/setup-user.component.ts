@@ -12,9 +12,12 @@ export class SetupUserComponent implements OnInit {
   isLinear = false;
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
+  lastFormGroup: FormGroup;
 
   supportedLanguages: any[];
   supportedCountries: any[];
+
+  languageLevelValues: any;
 
   /*Supported languages*/
 
@@ -25,11 +28,18 @@ export class SetupUserComponent implements OnInit {
       firstCtrl: ['', Validators.required]
     });
     this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
+      newLanguageLevel: [1, Validators.required]
+    });
+    this.lastFormGroup =  this._formBuilder.group({
+      newLanguageLevel: [1, Validators.required]
     });
 
     this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
     this.supportedCountries = this.countryLanguage.getSupportedCountries();
+    this.languageLevelValues = this.countryLanguage.getLanguageLevelValues();
+  }
+  printForm() {
+    console.log(this.secondFormGroup);
   }
 
 }
