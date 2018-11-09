@@ -54,7 +54,6 @@ export class ProfileComponent implements OnInit {
       this.profile_data.secundaryLenguages.push({ name: value.trim() });
       console.log(this.profile_data.secundaryLenguages)
     }
-
     // Reset the input value
     if (input) {
       input.value = '';
