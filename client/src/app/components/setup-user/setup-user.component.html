@@ -3,7 +3,7 @@
     <mat-card-header>
       <mat-card-title>Settup your account</mat-card-title>
     </mat-card-header>
-    <mat-card-content *ngIf="!waitingSessionResponse">
+    <mat-card-content>
       <mat-horizontal-stepper [linear]="isLinear" #stepper>
         <mat-step [stepControl]="firstFormGroup">
           <form [formGroup]="firstFormGroup">
@@ -12,7 +12,7 @@
               <div class="col col-sm-12 col-md-4 offset-md-1 offset-md-0">
                 <h5>Select your native language</h5>
                 <mat-form-field class="form-field-fullwidth">
-                  <mat-select placeholder="Native Language">
+                  <mat-select placeholder="Native Language" formControlName="nativeLanguage">
                     <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
                       {{language.name}}
                     </mat-option>
@@ -22,7 +22,7 @@
               <div class="col col-sm-12 col-md-4 offset-md-1 offset-md-0">
                 <h5>Select your country</h5>
                 <mat-form-field class="form-field-fullwidth">
-                  <mat-select placeholder="Country">
+                  <mat-select placeholder="Country" formControlName="country">
                     <mat-option *ngFor="let country of supportedCountries" [value]="country.code">
                       <img class="country-flag-img" [src]="country.icon">
                       <span class="country-name">{{country.name}}</span>
@@ -44,7 +44,7 @@
             <div class="row fields-container">
               <div class="col col-md-3 col-sm-12 offset-md-3 offset-sm-0">
                 <mat-form-field class="form-field-fullwidth">
-                  <mat-select placeholder="Language">
+                  <mat-select placeholder="Language" formControlName="newLanguage">
                     <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
                       <span>{{language.name}}</span>
                     </mat-option>
@@ -58,7 +58,28 @@
                 <label>Level: <strong>{{languageLevelValues[secondFormGroup.controls.newLanguageLevel.value]}}</strong></label>
               </div>
               <div class="col col-md-1 col-sm-3">
-                <button mat-fab color="accent" (click)="printForm()">Add</button>
+                <button mat-fab color="accent" (click)="addSecondaryLanguage()">Add</button>
+              </div>
+            </div>
+            <br />
+            <div class="row" *ngIf="secondaryLanguagesArr.length > 0">
+              <div class="col col-md-8 col-sm-12 offset-md-2 offset-sm-0">
+                <table class="table table-dark">
+                  <thead>
+                    <tr>
+                      <th>Language</th>
+                      <th>Level</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let secondaryLanguage of secondaryLanguagesArr">
+                      <td>{{countryLanguage.getLanguageByCode(secondaryLanguage.language).name}}</td>
+                      <td>{{languageLevelValues[secondaryLanguage.level]}} ({{secondaryLanguage.level}})</td>
+                      <td><button mat-fab color="warn" (click)="removeCurrentSecondaryLanguage(secondaryLanguage.language)">Remove</button></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
             <div>
@@ -76,7 +97,7 @@
             <div class="row fields-container">
               <div class="col col-md-4 col-sm-12 offset-md-4 offset-sm-0">
                 <mat-form-field class="form-field-fullwidth">
-                  <mat-select placeholder="Language">
+                  <mat-select placeholder="Language" formControlName="learningLanguage">
                     <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
                       <span>{{language.name}}</span>
                     </mat-option>
@@ -92,8 +113,5 @@
         </mat-step>
       </mat-horizontal-stepper>
     </mat-card-content>
-    <div class="center">
-      <mat-progress-spinner mode="indeterminate" *ngIf="waitingSessionResponse"></mat-progress-spinner>
-    </div>
   </mat-card>
 </div>

@@ -26,6 +26,10 @@ export class CountryLanguageService {
     }
   ];
 
+  public getLanguageByCode(code){
+    return this.supportedLanguages.find(e => e.code == code);
+  }
+
   private languageLevelValues = 
     {
       1: "Newbie",
