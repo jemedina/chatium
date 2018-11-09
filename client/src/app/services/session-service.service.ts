@@ -18,6 +18,13 @@ export class SessionService {
   readonly PORT = 3000;
   readonly DOMAIN = 'http://localhost:';
 
+  MOCK_USER = {
+    name: "User",
+    profile_pic: "assets/images/default_profile_pic.png",
+    sex: "female",
+    native_lang: "es",
+    secundaryLenguages:[]
+  }
 
   beginSession(email: string, passwd: string) {
     console.log(email, passwd);
@@ -30,6 +37,11 @@ export class SessionService {
   createUser(newUser: NewUser) {
     console.log(newUser);
     return this.httpClient.post(this.DOMAIN + this.PORT + '/regist',newUser);
+  }
+
+
+  getUserInfo() {
+
   }
 
   constructor(private httpClient: HttpClient) { }
