@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      gender: ['', Validators.required]
     });
   }
 

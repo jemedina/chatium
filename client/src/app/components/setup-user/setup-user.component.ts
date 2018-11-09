@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryLanguageService } from 'src/app/services/country-language.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { CountryLanguageService } from 'src/app/services/country-language.servic
 })
 export class SetupUserComponent implements OnInit {
 
-  isLinear = false;
+  isLinear: boolean = true;
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   lastFormGroup: FormGroup;
@@ -19,19 +19,22 @@ export class SetupUserComponent implements OnInit {
 
   languageLevelValues: any;
 
-  /*Supported languages*/
+  secondaryLanguagesArr: any[];
 
-  constructor(private _formBuilder: FormBuilder, private countryLanguage: CountryLanguageService) {}
+  constructor(private _formBuilder: FormBuilder, private countryLanguage: CountryLanguageService) { }
 
   ngOnInit() {
+    this.secondaryLanguagesArr = [];
     this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
+      nativeLanguage: ['', Validators.required],
+      country: ['', Validators.required]
     });
     this.secondFormGroup = this._formBuilder.group({
-      newLanguageLevel: [1, Validators.required]
+      newLanguage: [''],
+      newLanguageLevel: [1]
     });
-    this.lastFormGroup =  this._formBuilder.group({
-      newLanguageLevel: [1, Validators.required]
+    this.lastFormGroup = this._formBuilder.group({
+      learningLanguage: ['', Validators.required]
     });
 
     this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
@@ -40,6 +43,24 @@ export class SetupUserComponent implements OnInit {
   }
   printForm() {
     console.log(this.secondFormGroup);
+  }
+
+  addSecondaryLanguage() {
+    if (this.secondFormGroup.controls.newLanguage.value !== '' &&
+      !this.secondaryLanguagesArr.some(
+        e => e.language === this.secondFormGroup.controls.newLanguage.value)) {
+      this.secondaryLanguagesArr.push({
+        language: this.secondFormGroup.controls.newLanguage.value,
+        level: this.secondFormGroup.controls.newLanguageLevel.value
+      })
+    }
+  }
+
+  removeCurrentSecondaryLanguage(language) {
+    const index = this.secondaryLanguagesArr.findIndex(
+      e => e.language === this.secondFormGroup.controls.newLanguage.value);
+
+    this.secondaryLanguagesArr.splice(index);
   }
 
 }

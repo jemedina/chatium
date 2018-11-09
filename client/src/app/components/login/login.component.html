@@ -31,6 +31,15 @@
             <mat-form-field class="form-field-fullwidth">
               <input matInput placeholder="Password" type="password" formControlName="password">
             </mat-form-field>
+            <div class="form-field-fullwidth">
+              <span class="genderLabel">Gender:</span>
+              <mat-form-field>
+                <select matNativeControl required formControlName="gender">
+                  <option value="man">Man</option>
+                  <option value="woman">Woman</option>
+                </select>
+              </mat-form-field>
+            </div>
 
             <button mat-button>Register</button>
           </form>
