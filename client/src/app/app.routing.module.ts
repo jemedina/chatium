@@ -21,7 +21,7 @@ const routes: Routes = [
       { path: '**', component: ConnectpeopleComponent }
     ]
   },
-  { path: '**', component: LoginComponent }
+  { path: '**', component: HomeComponent }
 ];
 @NgModule({
   imports: [
