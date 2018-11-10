@@ -1,0 +1,61 @@
+.sidebar-content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.sidebar-userinfo {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    .userinfo-image {
+        width: 90px;
+        border-radius: 100%;
+    }
+    .userinfo-name { 
+        margin-top: 10px;
+        .status-symbol {
+            background-color: lime;
+            width: 10px;
+            height: 10px;
+            margin-top: 10px;
+            border-radius: 100%;
+        }
+
+    }
+}
+
+.sidebar-friends {
+    .search-friends {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .friends-list {
+        padding-top: 5px; 
+        .friend-item-wrapper {
+            margin: 10px;
+            mat-card {
+
+                overflow: hidden;
+                padding-right: 10px;
+                .friend-card-image {
+                    width: 30px;
+                }
+                .friend-card-name {
+                    padding-left: 10px;
+                    white-space: nowrap;
+                    word-break: break-all
+                }
+                .friend-card {
+                    float: left;
+                }
+                &:hover {
+                    cursor: pointer;
+                }
+                &:active {
+                    background-color: #bbb;
+                }
+            }
+        }
+    }
+}

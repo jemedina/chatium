@@ -1,1 +1,24 @@
 //Custom form clases
+@import 'variables';
+
+::ng-deep .navbar-wrapper {
+    position: absolute;
+    padding-top: $navbar-height;
+    height: 100%;
+    width: $sidebar-width;
+    box-shadow: 1px 1px 5px #444;
+    background-color: white;
+    top: 0;
+    z-index: -1;
+}
+
+::ng-deep .navbar-content-wrapper {
+    position: absolute;
+    padding-top: $navbar-height;
+    padding-left: $sidebar-width;
+    background-color: #eee;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: -2;
+}
