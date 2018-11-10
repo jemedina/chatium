@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CountryLanguageService } from '../../services/country-language.service';
 import { MatChipInputEvent } from '@angular/material';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { FormControl, FormGroup, Validators, FormArray } from "@angular/forms";
+import { formControlBinding } from '@angular/forms/src/directives/reactive_directives/form_control_directive';
 
 export interface Fruit {
   name: string;
@@ -14,57 +16,83 @@ export interface Fruit {
 })
 export class ProfileComponent implements OnInit {
   flag_changeNativeL: boolean = false;
-  visible = true;
-  selectable = true;
+  flag_changeLearningL = false;
   removable = true;
-  addOnBlur = true;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+   
+  formSelectNative:FormGroup;
+  formSelectLearn:FormGroup;
+
 
   profile_data: any = {
     name: "User",
     profile_pic: "assets/images/default_profile_pic.png",
     sex: "female",
     native_leng: "Español",
-    secundaryLenguages:[]
+    secundaryLenguages:[],
+    learning :["es","en", "fr"]
   }
 
+  learnPills: any[] =  [];
   supportedLanguages: any[];
 
-
   constructor(private countryLanguage: CountryLanguageService) {
+    this.formSelectNative= new FormGroup({
+      'selectNative' : new FormControl('', [Validators.required]),
+    })
 
-  }
+    this.formSelectLearn = new FormGroup({
+      'selectNew' : new FormControl('', [Validators.required])
+    })
+
+  } 
 
   ngOnInit() {
-    this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
-    console.log(this.supportedLanguages);
+    //Obtiene del servicio todos los idiomas soportados
+    this.supportedLanguages = this.countryLanguage.getSupportedLanguages();    
+    console.log("Lenguajes Soportados", this.supportedLanguages)
+
+    //Obtiene los nombres de los idiomas en base al codigo para mostrarlos en los chips
+    for (let index = 0; index < this.profile_data.learning.length; index++){
+      this.learnPills.push(this.countryLanguage.getLanguageByCode(this.profile_data.learning[index]))
+    }
   }
 
   changeNativeL() {
     this.flag_changeNativeL = !this.flag_changeNativeL;
   }
-
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    // Add our fruit
-    if ((value || '').trim()) {
-      console.log('valor '+ value)
-      this.profile_data.secundaryLenguages.push({ name: value.trim() });
-      console.log(this.profile_data.secundaryLenguages)
-    }
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
+  changeLearningL(){
+    this.flag_changeLearningL = !this.flag_changeLearningL;
   }
 
   remove(fruit: Fruit): void {
-    const index = this.profile_data.secundaryLenguages.indexOf();
+    const index = this.learnPills.indexOf(fruit);
 
     if (index >= 0) {
-      this.profile_data.secundaryLenguages.splice(index, 1);
+      this.learnPills.splice(index, 1);
+    }
+    console.log(this.learnPills)
+  }
+
+
+  changeNative(){
+    console.log(this.formSelectNative.controls)
+    let code=this.formSelectNative.controls.selectNative.value
+    if(code){
+      this.profile_data.native_leng=this.countryLanguage.getLanguageByCode(code).name
+    }    
+  }
+  changeSex(){
+
+  }
+
+  addLearning(){   
+    console.log(this.formSelectLearn.controls)
+    let code =this.formSelectLearn.controls.selectNew.value
+    if (code){
+      let idiom = this.countryLanguage.getLanguageByCode(code)
+      this.learnPills.push(idiom);
+      console.log("idiom",idiom)
+      console.log("learnPills",this.learnPills)
     }
   }
 }
