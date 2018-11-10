@@ -15,6 +15,11 @@ import { SetupUserComponent } from './components/setup-user/setup-user.component
 import { CountryLanguageService } from './services/country-language.service';
 import { ProfileComponent } from "./components/profile/profile.component";  
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
+import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
+import { HomeComponent } from './components/home/home.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { ConnectpeopleComponent } from './components/connectpeople/connectpeople.component';
+
 
 @NgModule({
   declarations: [
@@ -22,7 +27,11 @@ import { NavbarComponent } from './components/shared/navbar/navbar.component';
     LoginComponent,
     SetupUserComponent,
     ProfileComponent,
-    NavbarComponent
+    NavbarComponent,
+    SidebarComponent,
+    HomeComponent,
+    ChatComponent,
+    ConnectpeopleComponent
   ],
   imports: [
     BrowserModule,
