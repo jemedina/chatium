@@ -28,54 +28,29 @@
       </mat-card>
     </div>
 
-    <div class="sent-message message-text">
+
+    <div class="sent-message message-text" *ngFor="let mensaje of mensajes_enviados">
       <mat-card>
-        mensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje
-        enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje
-        enviadomensaje enviadomensaje enviado
-        mensaje enviado
+        {{mensaje.texto}}
       </mat-card>
     </div>
 
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
-    <div class="sent-message message-text">
-      <mat-card>
-        mensaje enviado
-      </mat-card>
-    </div>
+
+
+
 
   </div>
 
   <div class="input-form">
     <div class="input-area">
-
+      <form [formGroup]="forma">
+        <textarea placeholder="Escribe aqui tu mensaje" class="mat-input mt-3" formControlName="mensaje"></textarea>
+      </form>
     </div>
     <div class="send-button-area">
-
+      <button mat-fab color='primary' (click)=" enviar()">
+        <i class="fas fa-paper-plane fa-lg "></i>
+      </button>
     </div>
   </div>
 </div>
