@@ -47,19 +47,8 @@ export class ChatComponent implements OnInit {
         emisor: "user",
         receptor: this.friendId,
       }
-      console.log(this.mockup_mensaje)
-
       this.mensajes_enviados.push(this.mockup_mensaje)
       this.forma.reset();
-      console.log(this.mensajes_enviados)
-    }
-
-
-    if(this.mensajes_enviados.length<1){
-      console.log("hay mensajes")
     }
   }
-
-
-
 }
