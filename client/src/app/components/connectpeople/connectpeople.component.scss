@@ -1,0 +1,68 @@
+.connect-search-params {
+    height: 150px;
+    box-shadow: 0 4px 2px -2px gray;
+    .col {
+        padding-top: 20px;
+        padding-left: 40px;
+        padding-right: 30px;
+    }
+}
+.connect-search-results {
+    padding-top: 20px;
+    overflow: auto;
+    height: calc(100% - 150px);
+    .suggestion-item {
+        text-align: center;
+        .roundcard {
+            &:hover > .cover {
+                display: block;
+            }
+            .cover {
+                display: none;
+                width: 300px;
+                height: 300px;
+                top: 0;
+                left: 0;
+                background-color: rgba($color: #000000, $alpha: .5);
+                border-radius: 100%;
+                button {
+                    margin-top: 120px;
+                    width: 80px;
+                    height: 80px;
+                }
+            }
+            margin: 0 auto;
+            box-shadow: 1px 2px 6px -1px #333;
+            height: 300px;
+            width: 300px;
+            border-radius: 100%;
+            margin-bottom: 40px;
+            overflow: hidden;
+
+            background-image: url('../../../assets/images/default_profile_pic.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+
+            .userinfo {
+                height: 90px;
+                margin-top: 210px;
+                background-color: #eee;
+                width: 100%;
+                .userinfo-nativelang {
+                    padding-left: 80px;
+                    div:last-child {
+                        padding-left: 30px;
+                    }
+                }
+
+                .userinfo-learninglang {
+                    padding-right: 20px;
+                    div:last-child {
+                        margin-left: -38px;
+                    }
+                }
+            }
+        }
+    }
+}

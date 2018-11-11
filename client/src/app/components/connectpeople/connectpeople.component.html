@@ -1,3 +1,90 @@
-<p>
-  connectpeople works!
-</p>
+<section class="connect-search-params">
+  <div class="row">
+    <div class="col col-xs-3">
+      <div class="form-group">
+        <label>
+          Knowledge in
+        </label>
+
+        <mat-form-field class="form-field-fullwidth">
+          <mat-select placeholder="Knowledge in">
+            <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
+              {{language.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <div class="form-group">
+        <label>
+          Looking to learn
+        </label>
+
+        <mat-form-field class="form-field-fullwidth">
+          <mat-select placeholder="Looking to learn">
+            <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
+              {{language.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <div class="form-group">
+        <label>
+          Knowledge level
+        </label>
+        <mat-form-field class="form-field-fullwidth">
+          <mat-select placeholder="Looking to learn">
+            <mat-option *ngFor="let languageLevel of languageLevels | keyvalue" [value]="languageLevel.key">
+              {{languageLevel.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="col col-xs-3">
+      <div class="form-group">
+        <label>
+          Gender
+        </label>
+        <mat-form-field class="form-field-fullwidth">
+          <mat-select placeholder="Gender">
+            <mat-option *ngFor="let gender of GENDERS" [value]="gender.code">
+              {{gender.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="connect-search-results">
+  <div class="row">
+    <div class="suggestion-item col col-md-4" *ngFor="let x of foundUsers">
+      <div class="roundcard">
+        <div class="cover">
+          <button mat-mini-fab color="primary" title="Send message" routerLink = '/home/chat/{{x}}'>
+            <i class="fas fa-comment fa-x2"></i>
+          </button>
+        </div>
+        <div class="userinfo">
+          <div class="userinfo-username">
+            <h5>User Name</h5>
+          </div>
+          <div class="row">
+            <div class="userinfo-nativelang col col-xs-6">
+              <div class="row"><b>Native</b></div>
+              <div class="row">English</div>
+            </div>
+            <div class="userinfo-learninglang col col-xs-6">
+              <div class="row"><b>Learning</b></div>
+              <div class="row">Spanish</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
