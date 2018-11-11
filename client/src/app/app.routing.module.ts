@@ -21,7 +21,7 @@ const routes: Routes = [
       { path: '**', component: ConnectpeopleComponent }
     ]
   },
-  { path: '**', component: HomeComponent }
+  { path: '**', redirectTo: 'home' }
 ];
 @NgModule({
   imports: [
