@@ -17,6 +17,7 @@ export interface Fruit {
 export class ProfileComponent implements OnInit {
   flag_changeNativeL: boolean = false;
   flag_changeLearningL = false;
+  flag_ChangeSex = false;
   removable = true;
    
   formSelectNative:FormGroup;
@@ -82,7 +83,7 @@ export class ProfileComponent implements OnInit {
     }    
   }
   changeSex(){
-
+    this.flag_ChangeSex = !this.flag_ChangeSex;
   }
 
   addLearning(){   

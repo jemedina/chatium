@@ -1,3 +1,81 @@
-<p>
-  chat works! {{friendId}}
-</p>
+<div class="chat-window">
+  <div class="user-secccion sticky-top">
+    <mat-card class="animated fadeIn fast">
+      <mat-card-header>
+        <img mat-card-avatar [src]=" mockup_user.profile_pic">
+        <mat-card-title>
+          <i *ngIf="mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#2EFE2E"></i>
+          <i *ngIf="!mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#585858"></i>
+          {{mockup_user.name}} {{friendId}}
+        </mat-card-title>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+  <div class="messages-section">
+    <div class="received-message message-text">
+      <mat-card>
+        mensaje recibido
+      </mat-card>
+    </div>
+
+
+    <div class="received-message message-text">
+      <mat-card>
+        mensaje recibido mensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje
+        recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje
+        recibidomensaje recibidomensaje recibidomensaje recibido
+      </mat-card>
+    </div>
+
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje
+        enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje enviadomensaje
+        enviadomensaje enviadomensaje enviado
+        mensaje enviado
+      </mat-card>
+    </div>
+
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+    <div class="sent-message message-text">
+      <mat-card>
+        mensaje enviado
+      </mat-card>
+    </div>
+
+  </div>
+
+  <div class="input-form">
+    <div class="input-area">
+
+    </div>
+    <div class="send-button-area">
+
+    </div>
+  </div>
+</div>

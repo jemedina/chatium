@@ -3,3 +3,8 @@
     height: "25px"!important;
 
 }
+
+img[mat-card-avatar]{
+    width: 60px;
+    height: 60px;
+}

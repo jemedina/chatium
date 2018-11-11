@@ -1,0 +1,69 @@
+.chat-window{
+    width: 100%;
+    height: 100%;
+    background-color: green;    
+}
+
+
+.user-secccion{
+    width: 100%;
+    max-height: 10%;
+}
+
+.messages-section{
+    padding: 1rem;
+    background-color: blue;
+    width: 100%;
+    height: 80%;
+    overflow: auto;
+}
+
+.message-text{
+    font-size: 11pt;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+.received-message{
+    margin-bottom: 1rem;
+    max-width: 70%;
+    min-width: 10%;
+    mat-card{
+        background-color:#D8D8D8;        
+    }
+}
+
+.sent-message{
+    margin-top: 1rem;
+    max-width: 70%;
+    margin-left: 33.3%;   
+    mat-card{
+        background-color: #BCF5A9;
+        
+    }
+}
+
+.input-form{
+    width: 100%;
+    height: 9.797%;
+    bottom: 0;       
+    background-color: red;
+    border: solid 2px rgb(255, 208, 0);
+    
+}
+
+.input-area{
+    width: 80%;
+    height: 100%;
+    background-color: chartreuse;
+    display: inline-block;
+}
+
+.send-button-area{
+    width: 20%;
+    height: 100%;
+    background-color: aqua;
+    display: inline-block;
+}
+
+.mat-form{
+    width: 100%;
+}
