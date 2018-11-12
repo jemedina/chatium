@@ -13,6 +13,8 @@
   </div>
 
   <div class="messages-section">
+
+    <!--Diseño para mensajes recibidos 1-1-->
     <div class="received-message message-text">
       <mat-card>
         mensaje recibido
@@ -20,15 +22,21 @@
     </div>
 
 
-    <div class="received-message message-text">
+    <!--Diseño mensaje recibidos rooms-->
+    <div class="received-message message-text" *ngFor="let mensaje of mensajes_recibidos">
       <mat-card>
-        mensaje recibido mensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje
-        recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje recibidomensaje
-        recibidomensaje recibidomensaje recibidomensaje recibido
+        <mat-card-subtitle>
+          <strong>
+            {{mensaje.emisor}}
+          </strong>
+          {{mensaje.fecha | date :medium}}
+        </mat-card-subtitle>
+        {{mensaje.texto}}
       </mat-card>
     </div>
 
 
+    <!--Diseño para mensaje enviado-->
     <div class="sent-message message-text" *ngFor="let mensaje of mensajes_enviados">
       <mat-card>
         {{mensaje.texto}}
