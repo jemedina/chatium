@@ -5,10 +5,12 @@ export class NewUser {
   name: string;
   email: string;
   password: string;
-  constructor(name, email, pass){
+  gender: string;
+  constructor(name, email, pass, gender){
     this.name = name;
     this.email = email;
     this.password = pass;
+    this.gender = gender;
   }
 }
 @Injectable({
@@ -41,7 +43,7 @@ export class SessionService {
 
 
   getUserInfo() {
-
+    return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo',{withCredentials:true});
   }
 
   constructor(private httpClient: HttpClient) { }

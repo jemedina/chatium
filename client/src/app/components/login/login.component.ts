@@ -51,7 +51,8 @@ export class LoginComponent implements OnInit {
       this.sessionService.createUser(new NewUser(
         this.registerForm.controls.name.value,
         this.registerForm.controls.email.value,
-        this.registerForm.controls.password.value)
+        this.registerForm.controls.password.value,
+        this.registerForm.controls.gender.value)
         ).subscribe( (data: any) => {
           this.waitingSessionResponse = false;
           console.log(data);
