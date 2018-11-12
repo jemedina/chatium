@@ -23,11 +23,19 @@ export class ChatComponent implements OnInit {
   mockup_mensaje: {
     texto: string,
     emisor: string,
-    receptor: string
+    receptor: string,
+    fecha: any
+  }
+
+  mockup_mensaje_recibido:{
+    emisor:string,
+    texto: string,    
+    fecha: any,
   }
 
  
   mensajes_enviados =[]
+  mensajes_recibidos=[]
 
   constructor(private router: ActivatedRoute) {
     router.params.subscribe(map => this.friendId = map.friendId);
@@ -46,9 +54,18 @@ export class ChatComponent implements OnInit {
         texto: this.forma.controls.mensaje.value,
         emisor: "user",
         receptor: this.friendId,
+        fecha:  new Date()
       }
+      console.log(this.mockup_mensaje);
       this.mensajes_enviados.push(this.mockup_mensaje)
       this.forma.reset();
     }
+
+    this.mockup_mensaje_recibido = {
+      emisor: "babo",
+      texto: "Hola qlo, que anda haciendo compa :v",    
+      fecha: new Date(),
+    }
+    this.mensajes_recibidos.push(this.mockup_mensaje_recibido)
   }
 }
