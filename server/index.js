@@ -1,9 +1,18 @@
 var express = require('express');
 var bodyParser = require("body-parser");
 var session = require('express-session');
+var MemoryStore = require('memorystore')(session)
+var cookieParser = require('cookie-parser');
+var ObjectID = require('mongodb').ObjectID;
 
 const MongoClient = require('mongodb').MongoClient;
 
+const config = {
+  secret: 'helloworld'
+}
+var session_store = new MemoryStore({
+  checkPeriod: 86400000
+});
 const mongodb_url = 'mongodb://localhost:27017';
 
 const dbName = 'chatium';
@@ -20,21 +29,19 @@ MongoClient.connect(mongodb_url, { useNewUrlParser: true }, function (err, clien
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(session({
-  secret: "holamundo"
+  secret: config.secret,
+  saveUninitialized: true,
+  resave: true,
+  store: session_store
 }));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Content-Type', 'application/json');
-  // Pass to next layer of middleware
+  res.header("Access-Control-Allow-Credentials", true);
   next();
-});
-
-
-console.log("initializing server");
-app.get('/', function (req, res) {
-  res.send('Hello World!');
 });
 
 app.post('/login', function (req, res) {
@@ -50,7 +57,10 @@ app.post('/login', function (req, res) {
 
 app.post('/regist', function (req, res) {
   console.log(req.body);
-  db.collection('users').insertOne(req.body, function (error, response) {
+  var newUser = req.body;
+  newUser.state = 'ONLINE';
+  newUser.setup = false;
+  db.collection('users').insertOne(newUser, function (error, response) {
     if (error) {
       console.log('Error occurred while inserting', error);
       res.end(JSON.stringify({
@@ -60,9 +70,7 @@ app.post('/regist', function (req, res) {
       }));
       // return 
     } else {
-      console.log('inserted record', response.ops[0]);
       req.session.userid = response.ops[0]._id;
-      req.session.status = 'setup';
       // return 
       res.end(JSON.stringify({
         status: 1,
@@ -73,20 +81,34 @@ app.post('/regist', function (req, res) {
   });
 });
 
-app.get('/getUserInfo', function(req, res) {
-  console.log(req.session);
-  if(req.session.userid) {
-    res.end(JSON.stringify({
-      status: 'EXPLICIT'
-    }));
+app.get('/getUserInfo', function (req, res) {
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
+  if (connect_sid) {
+    session_store.get(connect_sid, function (error, session) {
+      if (session && session.userid) {
+        getUserInfoByObjectID(session.userid, function(result){
+          res.end(JSON.stringify(result));
+        });
+      }
+      else
+        res.end(JSON.stringify({
+          state: 'OFFLINE'
+        }));
+    });
   } else {
     res.end(JSON.stringify({
-      status: 'ANONYMOUS'
+      state: 'OFFLINE'
     }));
   }
-
 });
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
+
+function getUserInfoByObjectID(_id, callback) {
+  db.collection('users').findOne({ _id: new ObjectID(_id) }, function (err, result) {
+    if (err) throw err;
+    callback(result);
+  });
+}

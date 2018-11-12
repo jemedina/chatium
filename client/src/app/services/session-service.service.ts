@@ -6,7 +6,7 @@ export class NewUser {
   email: string;
   password: string;
   gender: string;
-  constructor(name, email, pass, gender){
+  constructor(name, email, pass, gender) {
     this.name = name;
     this.email = email;
     this.password = pass;
@@ -25,25 +25,25 @@ export class SessionService {
     profile_pic: "assets/images/default_profile_pic.png",
     sex: "female",
     native_lang: "es",
-    secundaryLenguages:[]
+    secundaryLenguages: []
   }
 
   beginSession(email: string, passwd: string) {
     console.log(email, passwd);
-    return this.httpClient.post(this.DOMAIN+this.PORT+'/login', {
+    return this.httpClient.post(this.DOMAIN + this.PORT + '/login', {
       email: email,
       password: passwd
-    });
+    }, { withCredentials: true });
   }
 
   createUser(newUser: NewUser) {
     console.log(newUser);
-    return this.httpClient.post(this.DOMAIN + this.PORT + '/regist',newUser);
+    return this.httpClient.post(this.DOMAIN + this.PORT + '/regist', newUser, { withCredentials: true });
   }
 
 
   getUserInfo() {
-    return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo',{withCredentials:true});
+    return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo', { withCredentials: true });
   }
 
   constructor(private httpClient: HttpClient) { }

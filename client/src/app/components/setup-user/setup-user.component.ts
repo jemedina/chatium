@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryLanguageService } from 'src/app/services/country-language.service';
 import { SessionService } from 'src/app/services/session-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-setup-user',
@@ -22,12 +23,9 @@ export class SetupUserComponent implements OnInit {
 
   secondaryLanguagesArr: any[];
 
-  constructor(private _formBuilder: FormBuilder, private countryLanguage: CountryLanguageService, private sessionService: SessionService) { }
+  constructor(private router: Router, private _formBuilder: FormBuilder, private countryLanguage: CountryLanguageService, private sessionService: SessionService) { }
 
   ngOnInit() {
-    this.sessionService.getUserInfo().subscribe( (data: any) => {
-      console.log(data);
-    });
     this.secondaryLanguagesArr = [];
     this.firstFormGroup = this._formBuilder.group({
       nativeLanguage: ['', Validators.required],
