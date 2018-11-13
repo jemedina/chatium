@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
       } else if (data && data.state == 'ONLINE' && data.setup == false) {
         this.router.navigate(['/setup']);
       }
-      console.log(data);
     });
   }
 }

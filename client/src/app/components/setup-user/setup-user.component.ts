@@ -43,9 +43,6 @@ export class SetupUserComponent implements OnInit {
     this.supportedCountries = this.countryLanguage.getSupportedCountries();
     this.languageLevelValues = this.countryLanguage.getLanguageLevelValues();
   }
-  printForm() {
-    console.log(this.secondFormGroup);
-  }
 
   addSecondaryLanguage() {
     if (this.secondFormGroup.controls.newLanguage.value !== '' &&
@@ -63,6 +60,18 @@ export class SetupUserComponent implements OnInit {
       e => e.language === this.secondFormGroup.controls.newLanguage.value);
 
     this.secondaryLanguagesArr.splice(index);
+  }
+
+  sendUserLanguageConfig() {
+    var userLanguageConfig = {
+      nativeLanguage: this.firstFormGroup.controls.nativeLanguage.value,
+      country: this.firstFormGroup.controls.country.value,
+      secondaryLanguages: this.secondaryLanguagesArr,
+      learningLanguage: this.lastFormGroup.controls.learningLanguage.value
+    };
+    this.sessionService.setupUserLanguages(userLanguageConfig).subscribe( res => {
+      console.log(res);
+    });
   }
 
 }

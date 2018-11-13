@@ -41,6 +41,11 @@ export class SessionService {
     return this.httpClient.post(this.DOMAIN + this.PORT + '/regist', newUser, { withCredentials: true });
   }
 
+  setupUserLanguages(userLanguagesConifg){
+    console.log(userLanguagesConifg);
+    return this.httpClient.post(this.DOMAIN + this.PORT + '/setupLanguages', userLanguagesConifg, { withCredentials: true });
+  }
+
 
   getUserInfo() {
     return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo', { withCredentials: true });

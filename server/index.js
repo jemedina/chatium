@@ -44,6 +44,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+server = app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
+
+const io = require('socket.io')
+
+
 app.post('/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
@@ -102,9 +109,36 @@ app.get('/getUserInfo', function (req, res) {
   }
 });
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+
+app.post('/setupLanguages', function (req, res) {
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
+  if (connect_sid) {
+    session_store.get(connect_sid, function (error, session) {
+      if (session && session.userid) {
+        var newvalues = { $set: {languageConfiguration: req.body, setup: true } };
+        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, newvalues, function(err, requeryResponse) {
+          if (err) throw err;
+          res.end(JSON.stringify({
+            status: 1,
+            error: null
+          }));
+        });
+      }
+      else {
+        res.end(JSON.stringify({
+          status: 0,
+          error: "Session has not been started"
+        }));
+      }
+    });
+  } else {
+    res.end(JSON.stringify({
+      status: 0,
+      error: "Session has not been started"
+    }));
+  }
 });
+
 
 function getUserInfoByObjectID(_id, callback) {
   db.collection('users').findOne({ _id: new ObjectID(_id) }, function (err, result) {
