@@ -51,5 +51,9 @@ export class SessionService {
     return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo', { withCredentials: true });
   }
 
+  signOut(){
+    return this.httpClient.get(this.DOMAIN + this.PORT + '/singOut', { withCredentials : true});
+  }
+
   constructor(private httpClient: HttpClient) { }
 }
