@@ -48,6 +48,24 @@ app.post('/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   var stat = 0;
+
+  /*
+  db.collection('users').findOne({ _id: new ObjectID(_id) }, function (err, result) {
+    if (err) throw err;
+    callback(result);
+  });
+  */
+
+  db.collection('users').findOne({email: email, password: password }, function( err, response){
+    if(err) throw err;
+    if (response){
+      user_id = response._id
+      console.log(user_id)
+      //stat=1;
+      //db.collection('users').update({})
+    }
+  })
+
   if (email == 'admin' && password == 'admin') {
     stat = 1;
   }
@@ -102,6 +120,8 @@ app.get('/getUserInfo', function (req, res) {
   }
 });
 
+
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
@@ -112,3 +132,4 @@ function getUserInfoByObjectID(_id, callback) {
     callback(result);
   });
 }
+
