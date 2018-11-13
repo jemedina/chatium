@@ -11,7 +11,13 @@ export class SearchService {
     constructor(private httpClient: HttpClient) { }
 
     getResultsByLanguagePreferences(languagePreferences) {
-        return this.httpClient.post(this.DOMAIN + this.PORT + '/searchConnections',languagePreferences);
+        return this.httpClient.post(this.DOMAIN + this.PORT + '/searchConnections',languagePreferences, {withCredentials: true});
     }
 
+    getUserInfoById(id) {
+        let data = {
+            id: id
+        }
+        return this.httpClient.post(this.DOMAIN + this.PORT + '/getUserInfoById', data);
+    }
 }

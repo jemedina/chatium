@@ -6,7 +6,7 @@
         <mat-card-title>
           <i *ngIf="mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#2EFE2E"></i>
           <i *ngIf="!mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#585858"></i>
-          {{mockup_user.name}} {{friendId}}
+          {{userInfo?.name}}
         </mat-card-title>
       </mat-card-header>
     </mat-card>

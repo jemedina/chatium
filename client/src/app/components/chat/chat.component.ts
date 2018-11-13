@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup } from "@angular/forms";
+import { SearchService } from 'src/app/services/search.service';
 
 
 @Component({
@@ -13,6 +14,8 @@ import { FormControl, FormGroup } from "@angular/forms";
 export class ChatComponent implements OnInit {
   forma: FormGroup;
   friendId: string;
+
+  userInfo: any;
 
   mockup_user: any = {
     name: "User",
@@ -37,14 +40,19 @@ export class ChatComponent implements OnInit {
   mensajes_enviados =[]
   mensajes_recibidos=[]
 
-  constructor(private router: ActivatedRoute) {
-    router.params.subscribe(map => this.friendId = map.friendId);
-  }
+  constructor(private router: ActivatedRoute, private searchService: SearchService) {  }
 
   ngOnInit() {
     this.forma = new FormGroup({
       'mensaje': new FormControl()
     })
+
+    this.router.params.subscribe(map => {
+      this.friendId = map.friendId;
+      this.searchService.getUserInfoById(this.friendId).subscribe(userInfo => this.userInfo = userInfo);
+    });
+
+    
   }
 
 

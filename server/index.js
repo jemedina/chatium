@@ -134,6 +134,12 @@ app.get('/getUserInfo', function (req, res) {
   }
 });
 
+app.post('/getUserInfoById', function(req, res) {
+  getUserInfoByObjectID(req.body.id, function (result) {
+    res.end(JSON.stringify(result));
+  });
+});
+
 
 
 app.post('/setupLanguages', function (req, res) {
@@ -183,6 +189,11 @@ app.post('/searchConnections', function (req, res) {
         res.end(JSON.stringify(results));
       });
     });
+  } else {
+    res.end(JSON.stringify({
+      status: 0,
+      error: "Session has not been started"
+    }));
   }
 });
 

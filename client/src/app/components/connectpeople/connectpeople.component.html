@@ -4,7 +4,7 @@
     <div class="col col-xs-3">
       <div class="form-group">
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Knowledge in" [(ngModel)]="searchParams.nativeLanguage">
+          <mat-select placeholder="Knowledge in" [(ngModel)]="searchParams.nativeLanguage" (ngModelChange)="refreshResults()">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
               {{language.name}}
             </mat-option>
@@ -15,7 +15,7 @@
     <div class="col col-xs-3">
       <div class="form-group">
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.learningLanguage">
+          <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.learningLanguage" (ngModelChange)="refreshResults()">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
               {{language.name}}
             </mat-option>
@@ -26,7 +26,7 @@
     <div class="col col-xs-3">
       <div class="form-group">
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Gender" [(ngModel)]="searchParams.gender">
+          <mat-select placeholder="Gender" [(ngModel)]="searchParams.gender" (ngModelChange)="refreshResults()">
             <mat-option *ngFor="let gender of GENDERS" [value]="gender.code">
               {{gender.name}}
             </mat-option>
@@ -38,25 +38,30 @@
 </section>
 <section class="connect-search-results">
   <div class="row">
-    <div class="suggestion-item col col-md-4" *ngFor="let x of foundUsers">
+    <div class="suggestion-item col col-md-4" *ngFor="let user of foundUsers">
       <div class="roundcard">
         <div class="cover">
-          <button mat-mini-fab color="primary" title="Send message" routerLink = '/home/chat/{{x}}'>
+          <button mat-mini-fab color="primary" title="Send message" routerLink = '/home/chat/{{user._id}}'>
             <i class="fas fa-comment fa-x2"></i>
           </button>
         </div>
         <div class="userinfo">
           <div class="userinfo-username">
-            <h5>User Name</h5>
+            <h5>{{
+                ((user.name.length > 20)?
+                (user.name | slice:0:20)+'...':user.name) | uppercase
+              }}</h5>
           </div>
           <div class="row">
             <div class="userinfo-nativelang col col-xs-6">
               <div class="row"><b>Native</b></div>
-              <div class="row">English</div>
+              <div class="row">{{
+                  countryLanguage.getLanguageByCode(user.languageConfiguration.nativeLanguage).name}}</div>
             </div>
             <div class="userinfo-learninglang col col-xs-6">
               <div class="row"><b>Learning</b></div>
-              <div class="row">Spanish</div>
+              <div class="row">{{
+                  countryLanguage.getLanguageByCode(user.languageConfiguration.learningLanguage).name}}</div>
             </div>
           </div>
         </div>

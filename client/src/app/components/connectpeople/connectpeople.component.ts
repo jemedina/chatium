@@ -24,7 +24,7 @@ export class ConnectpeopleComponent implements OnInit {
     "gender": "female"
   };
 
-  foundUsers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  foundUsers: any;
 
   constructor(private sessionService: SessionService, 
     private _formBuilder: FormBuilder,
@@ -40,9 +40,16 @@ export class ConnectpeopleComponent implements OnInit {
       this.searchParams.nativeLanguage = this.userInfo.languageConfiguration.learningLanguage;
       this.searchParams.learningLanguage = this.userInfo.languageConfiguration.nativeLanguage;
       this.searchParams.gender = this.userInfo.gender == 'male'?'female':'male';
+
+      this.refreshResults();  
+
     });
 
+  }
+
+  refreshResults() {
     this.searchService.getResultsByLanguagePreferences(this.searchParams).subscribe(res => {
+      this.foundUsers = res;
       console.log(res);
     });
   }
