@@ -93,7 +93,7 @@ app.get('/getUserInfo', function (req, res) {
   if (connect_sid) {
     session_store.get(connect_sid, function (error, session) {
       if (session && session.userid) {
-        getUserInfoByObjectID(session.userid, function(result){
+        getUserInfoByObjectID(session.userid, function (result) {
           res.end(JSON.stringify(result));
         });
       }
@@ -115,8 +115,8 @@ app.post('/setupLanguages', function (req, res) {
   if (connect_sid) {
     session_store.get(connect_sid, function (error, session) {
       if (session && session.userid) {
-        var newvalues = { $set: {languageConfiguration: req.body, setup: true } };
-        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, newvalues, function(err, requeryResponse) {
+        var newvalues = { $set: { languageConfiguration: req.body, setup: true } };
+        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, newvalues, function (err, requeryResponse) {
           if (err) throw err;
           res.end(JSON.stringify({
             status: 1,
@@ -136,6 +136,27 @@ app.post('/setupLanguages', function (req, res) {
       status: 0,
       error: "Session has not been started"
     }));
+  }
+});
+
+app.post('/searchConnections', function (req, res) {
+  var searchParams = req.body;
+  console.log("SEARCH PARMS", searchParams);
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
+  if (connect_sid) {
+    session_store.get(connect_sid, function (error, session) {
+      db.collection('users').find({
+        gender: searchParams.gender,
+        "languageConfiguration.nativeLanguage": searchParams.nativeLanguage,
+        "languageConfiguration.learningLanguage": searchParams.learningLanguage,
+        "_id": {
+          $ne: new ObjectID(session.userid)
+        }
+      }).toArray(function (err, results) {
+        if (err) throw err;
+        res.end(JSON.stringify(results));
+      });
+    });
   }
 });
 

@@ -13,6 +13,7 @@ import { CustomMaterialModule } from './core/material.module';
 import { SessionService } from './services/session-service.service';
 import { SetupUserComponent } from './components/setup-user/setup-user.component';
 import { CountryLanguageService } from './services/country-language.service';
+import { SearchService } from './services/search.service';
 import { ProfileComponent } from "./components/profile/profile.component";  
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
@@ -44,6 +45,7 @@ import { ConnectpeopleComponent } from './components/connectpeople/connectpeople
   providers: [
     SessionService,
     CountryLanguageService,
+    SearchService,
     FormBuilder],
   bootstrap: [AppComponent]
 })

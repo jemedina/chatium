@@ -1,11 +1,8 @@
 <section class="connect-search-params">
+  <h5>Looking for people with:</h5>
   <div class="row">
     <div class="col col-xs-3">
       <div class="form-group">
-        <label>
-          Knowledge in
-        </label>
-
         <mat-form-field class="form-field-fullwidth">
           <mat-select placeholder="Knowledge in" [(ngModel)]="searchParams.nativeLanguage">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
@@ -17,10 +14,6 @@
     </div>
     <div class="col col-xs-3">
       <div class="form-group">
-        <label>
-          Looking to learn
-        </label>
-
         <mat-form-field class="form-field-fullwidth">
           <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.learningLanguage">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
@@ -32,23 +25,6 @@
     </div>
     <div class="col col-xs-3">
       <div class="form-group">
-        <label>
-          Knowledge level
-        </label>
-        <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.level">
-            <mat-option *ngFor="let languageLevel of languageLevels | keyvalue" [value]="languageLevel.key">
-            {{languageLevel.value}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="col col-xs-3">
-      <div class="form-group">
-        <label>
-          Gender
-        </label>
         <mat-form-field class="form-field-fullwidth">
           <mat-select placeholder="Gender" [(ngModel)]="searchParams.gender">
             <mat-option *ngFor="let gender of GENDERS" [value]="gender.code">
