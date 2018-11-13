@@ -71,6 +71,7 @@ export class SetupUserComponent implements OnInit {
     };
     this.sessionService.setupUserLanguages(userLanguageConfig).subscribe( res => {
       console.log(res);
+      this.router.navigate(['/home']);
     });
   }
 

@@ -55,11 +55,36 @@ app.post('/login', function (req, res) {
   var email = req.body.email;
   var password = req.body.password;
   var stat = 0;
-  if (email == 'admin' && password == 'admin') {
-    stat = 1;
+  db.collection('users').findOne({ email: email, password: password }, function (err, response) {
+    if (err) throw err;
+    if (response) {
+      user_id = response._id;
+      req.session.userid = user_id;
+      stat = 1;
+      db.collection('users').updateOne({ _id: user_id }, { $set: { state: "ONLINE" } })
+      console.log("Busqueda correcta y campos actualizados, status=", stat);
+      res.end(JSON.stringify({ status: stat, error: null }));
+    } else {
+      res.end(JSON.stringify({
+        status: 0,
+        error: "Session has not been started"
+      }));
+    }
+  })
+
+});
+
+app.get('/singOut', function (req, res) {
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);  
+  if (connect_sid) {
+    session_store.get(connect_sid, function (error, session) {
+      req.session.destroy(function(err){
+        console.log("ID USER: ", session.userid);
+        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, { $set: { state: "OFFLINE" }});
+        res.end(JSON.stringify({state:1, error: null}));
+      })      
+    })
   }
-  console.log("User session started name = " + email + ", password is " + password);
-  res.send(JSON.stringify({ status: stat, error: null }));
 });
 
 app.post('/regist', function (req, res) {
@@ -108,6 +133,7 @@ app.get('/getUserInfo', function (req, res) {
     }));
   }
 });
+
 
 
 app.post('/setupLanguages', function (req, res) {
@@ -167,3 +193,4 @@ function getUserInfoByObjectID(_id, callback) {
     callback(result);
   });
 }
+

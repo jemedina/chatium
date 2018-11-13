@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
 
   verifySession() {
     this.sessionService.getUserInfo().subscribe( (data: any) => {
+      console.log("Data: ", data)
       if(data && data.state === 'OFFLINE'){
         this.router.navigate(['/login']);
       } else if (data && data.state == 'ONLINE' && data.setup == true) {

@@ -35,8 +35,9 @@ export class LoginComponent implements OnInit {
   doLogin() {
     console.log("doLogin clicked");
     this.sessionService.beginSession(this.email, this.password).subscribe((data:  any) => {
+      console.log("Respuesta: ", data.status)
       if(data.status == this.LOGIN_SUCCESSFUL) {
-        alert("Session started!");
+        this.router.navigate(['/home']);
       } else {
         alert("User/Pass incorrects");
       }
