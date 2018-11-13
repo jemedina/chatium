@@ -7,7 +7,7 @@
         </label>
 
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Knowledge in">
+          <mat-select placeholder="Knowledge in" [(ngModel)]="searchParams.nativeLanguage">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
               {{language.name}}
             </mat-option>
@@ -22,7 +22,7 @@
         </label>
 
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Looking to learn">
+          <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.learningLanguage">
             <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
               {{language.name}}
             </mat-option>
@@ -36,9 +36,9 @@
           Knowledge level
         </label>
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Looking to learn">
+          <mat-select placeholder="Looking to learn" [(ngModel)]="searchParams.level">
             <mat-option *ngFor="let languageLevel of languageLevels | keyvalue" [value]="languageLevel.key">
-              {{languageLevel.value}}
+            {{languageLevel.value}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -50,7 +50,7 @@
           Gender
         </label>
         <mat-form-field class="form-field-fullwidth">
-          <mat-select placeholder="Gender">
+          <mat-select placeholder="Gender" [(ngModel)]="searchParams.gender">
             <mat-option *ngFor="let gender of GENDERS" [value]="gender.code">
               {{gender.name}}
             </mat-option>

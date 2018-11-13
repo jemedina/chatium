@@ -14,9 +14,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.verifySession();
-    this.router.events.subscribe( (val) => {
+    /*this.router.events.subscribe( (val) => {
       this.verifySession();
-    });
+    });*/
   }
 
   verifySession() {
