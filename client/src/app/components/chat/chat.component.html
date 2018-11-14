@@ -15,15 +15,17 @@
   <div class="messages-section">
 
     <!--Diseño para mensajes recibidos 1-1-->
-    <div class="received-message message-text">
-      <mat-card>
-        mensaje recibido
-      </mat-card>
-    </div>
+
+    <span *ngFor="let mensaje of mensajes">
+      <div class="received-message message-text" *ngIf="mensaje.type == 'received'">
+        <mat-card>
+          {{mensaje.texto}}
+        </mat-card>
+      </div>
 
 
-    <!--Diseño mensaje recibidos rooms-->
-    <div class="received-message message-text" *ngFor="let mensaje of mensajes_recibidos">
+      <!--Diseño mensaje recibidos rooms-->
+      <!--<div class="received-message message-text" *ngFor="let mensaje of mensajes_recibidos">
       <mat-card>
         <mat-card-subtitle>
           <strong>
@@ -33,15 +35,16 @@
         </mat-card-subtitle>
         {{mensaje.texto}}
       </mat-card>
-    </div>
+    </div>-->
 
 
-    <!--Diseño para mensaje enviado-->
-    <div class="sent-message message-text" *ngFor="let mensaje of mensajes_enviados">
-      <mat-card>
-        {{mensaje.texto}}
-      </mat-card>
-    </div>
+      <!--Diseño para mensaje enviado-->
+      <div class="sent-message message-text" *ngIf="mensaje.type == 'sent'">
+        <mat-card>
+          {{mensaje.texto}}
+        </mat-card>
+      </div>
+    </span>
   </div>
 
   <div class="input-form">

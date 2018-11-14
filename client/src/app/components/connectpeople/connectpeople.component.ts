@@ -17,7 +17,8 @@ export class ConnectpeopleComponent implements OnInit {
     { code: "male", name: "Male" },
     { code: "female", name: "Female" }
   ];
-
+  
+  //Default params
   searchParams: any = {
     "nativeLanguage": "en",
     "learningLanguage": "es",
@@ -50,7 +51,6 @@ export class ConnectpeopleComponent implements OnInit {
   refreshResults() {
     this.searchService.getResultsByLanguagePreferences(this.searchParams).subscribe(res => {
       this.foundUsers = res;
-      console.log(res);
     });
   }
 

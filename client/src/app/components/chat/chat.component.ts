@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup } from "@angular/forms";
 import { SearchService } from 'src/app/services/search.service';
-
+import { ChatService } from 'src/app/services/chat.service';
+import { SessionService } from 'src/app/services/session-service.service';
 
 @Component({
   selector: 'app-chat',
@@ -17,6 +18,13 @@ export class ChatComponent implements OnInit {
 
   userInfo: any;
 
+  CHAT_TYPES = {
+    USER: 'user',
+    ROOM: 'room'
+  };
+
+  chatType: string;
+
   mockup_user: any = {
     name: "User",
     profile_pic: "assets/images/default_profile_pic.png",
@@ -30,17 +38,21 @@ export class ChatComponent implements OnInit {
     fecha: any
   }
 
-  mockup_mensaje_recibido:{
-    emisor:string,
-    texto: string,    
+  mockup_mensaje_recibido: {
+    emisor: string,
+    texto: string,
     fecha: any,
   }
 
- 
-  mensajes_enviados =[]
-  mensajes_recibidos=[]
 
-  constructor(private router: ActivatedRoute, private searchService: SearchService) {  }
+  mensajes = []
+
+  constructor(
+    private router: ActivatedRoute,
+    private searchService: SearchService,
+    private chatService: ChatService,
+    private routerer: Router,
+    private sessionService: SessionService) { }
 
   ngOnInit() {
     this.forma = new FormGroup({
@@ -48,32 +60,73 @@ export class ChatComponent implements OnInit {
     })
 
     this.router.params.subscribe(map => {
+      if (map.type == this.CHAT_TYPES.USER) {
+        this.chatType = this.CHAT_TYPES.USER;
+      } else if (map.type == this.CHAT_TYPES.ROOM) {
+        this.chatType = this.CHAT_TYPES.ROOM
+      } else {
+        this.routerer.navigate(['/home/connect']);
+        return;
+      }
       this.friendId = map.friendId;
-      this.searchService.getUserInfoById(this.friendId).subscribe(userInfo => this.userInfo = userInfo);
-    });
+      this.searchService.getUserInfoById(this.friendId).subscribe(userInfo => {
+        this.userInfo = userInfo;
+      });
 
-    
+      this.sessionService.getUserInfo().subscribe( user => {
+        //BEGIN CHAT
+        var chatconfig = {
+          type: this.chatType
+        };
+        if (this.chatType == this.CHAT_TYPES.USER) {
+          chatconfig['ops'] = {
+            emisor: user['_id'],
+            receptor: this.friendId
+          };
+        } else {
+          chatconfig['ops'] = {
+            roomid: 'roomid'
+          };
+        }
+        if(user['state'] == 'ONLINE') {
+          this.chatService.beginChat(chatconfig);
+          this.chatService.getConnection().on('message received', (msg) => {
+            console.log(msg);
+            this.mensajes.push({
+              type: 'received',
+              texto: msg
+            });
+          });
+        }
+      });
+    });
   }
 
 
   enviar() {
     if (this.forma.controls.mensaje.value) {
-      this.mockup_mensaje = {
+      this.chatService.sendMessage(this.forma.controls.mensaje.value);
+      this.mensajes.push({
+        type: 'sent',
+        texto: this.forma.controls.mensaje.value
+      });
+      /*this.mockup_mensaje = {
         texto: this.forma.controls.mensaje.value,
         emisor: "user",
         receptor: this.friendId,
-        fecha:  new Date()
+        fecha: new Date()
       }
       console.log(this.mockup_mensaje);
-      this.mensajes_enviados.push(this.mockup_mensaje)
+      this.mensajes_enviados.push(this.mockup_mensaje)*/
+
       this.forma.reset();
     }
-
+/*
     this.mockup_mensaje_recibido = {
       emisor: "babo",
-      texto: "Hola qlo, que anda haciendo compa :v",    
+      texto: "Hola qlo, que anda haciendo compa :v",
       fecha: new Date(),
     }
-    this.mensajes_recibidos.push(this.mockup_mensaje_recibido)
+    this.mensajes_recibidos.push(this.mockup_mensaje_recibido)*/
   }
 }

@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app.routing.module';
 import { CustomMaterialModule } from './core/material.module';
 
 import { SessionService } from './services/session-service.service';
+import { ChatService } from './services/chat.service';
 import { SetupUserComponent } from './components/setup-user/setup-user.component';
 import { CountryLanguageService } from './services/country-language.service';
 import { SearchService } from './services/search.service';
@@ -44,6 +45,7 @@ import { ConnectpeopleComponent } from './components/connectpeople/connectpeople
   ],
   providers: [
     SessionService,
+    ChatService,
     CountryLanguageService,
     SearchService,
     FormBuilder],

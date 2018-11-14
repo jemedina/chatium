@@ -27,6 +27,7 @@ export class SessionService {
     native_lang: "es",
     secundaryLenguages: []
   }
+  currentUserInfo = {};
 
   beginSession(email: string, passwd: string) {
     console.log(email, passwd);

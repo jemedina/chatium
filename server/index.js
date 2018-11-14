@@ -47,8 +47,7 @@ app.use(function (req, res, next) {
 server = app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
-
-const io = require('socket.io')
+var io = require('socket.io')(server);
 
 
 app.post('/login', function (req, res) {
@@ -62,7 +61,7 @@ app.post('/login', function (req, res) {
       req.session.userid = user_id;
       stat = 1;
       db.collection('users').updateOne({ _id: user_id }, { $set: { state: "ONLINE" } })
-      console.log("Busqueda correcta y campos actualizados, status=", stat);
+      //console.log("Busqueda correcta y campos actualizados, status=", stat);
       res.end(JSON.stringify({ status: stat, error: null }));
     } else {
       res.end(JSON.stringify({
@@ -75,23 +74,24 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/singOut', function (req, res) {
-  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);  
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
   if (connect_sid) {
     session_store.get(connect_sid, function (error, session) {
-      req.session.destroy(function(err){
-        console.log("ID USER: ", session.userid);
-        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, { $set: { state: "OFFLINE" }});
-        res.end(JSON.stringify({state:1, error: null}));
-      })      
+      req.session.destroy(function (err) {
+        //console.log("ID USER: ", session.userid);
+        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, { $set: { state: "OFFLINE" } });
+        res.end(JSON.stringify({ state: 1, error: null }));
+      })
     })
   }
 });
 
 app.post('/regist', function (req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   var newUser = req.body;
   newUser.state = 'ONLINE';
   newUser.setup = false;
+  newUser.chats = [];
   db.collection('users').insertOne(newUser, function (error, response) {
     if (error) {
       console.log('Error occurred while inserting', error);
@@ -134,7 +134,7 @@ app.get('/getUserInfo', function (req, res) {
   }
 });
 
-app.post('/getUserInfoById', function(req, res) {
+app.post('/getUserInfoById', function (req, res) {
   getUserInfoByObjectID(req.body.id, function (result) {
     res.end(JSON.stringify(result));
   });
@@ -173,7 +173,6 @@ app.post('/setupLanguages', function (req, res) {
 
 app.post('/searchConnections', function (req, res) {
   var searchParams = req.body;
-  console.log("SEARCH PARMS", searchParams);
   var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
   if (connect_sid) {
     session_store.get(connect_sid, function (error, session) {
@@ -205,3 +204,54 @@ function getUserInfoByObjectID(_id, callback) {
   });
 }
 
+/****************** CHAT LOGIC ***********************/
+
+var onlineUsers = {};
+io.on('connection', function (socket) {
+
+  console.log("New connection");
+
+
+
+  socket.on('disconnect', function () {
+    console.log("User disconnected :(");
+    if (socket && socket.chatinfo && socket.chatinfo.ops && socket.chatinfo.ops.emisor)
+      delete onlineUsers[socket.chatinfo.ops.emisor];
+  });
+
+
+  socket.on('chat started', function (chatinfo) {
+    console.log('chat started', chatinfo);
+    if (chatinfo && chatinfo.ops && chatinfo.ops.emisor) {
+      socket.chatinfo = chatinfo;
+      onlineUsers[chatinfo.ops.emisor] = {
+        socket: socket
+      };
+      db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.emisor) },
+        {
+          $push: {
+            chats: {
+              chatid: 'mockid',
+              receptor: chatinfo.ops.receptor
+            }
+          }
+        });
+      db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.receptor) },
+        {
+          $push: {
+            chats: {
+              chatid: 'mockid',
+              receptor: chatinfo.ops.emisor
+            }
+          }
+        });
+    }
+
+  });
+
+  socket.on('send message', function (message) {
+    console.log("Message received", message);
+    if (socket.chatinfo.ops.receptor in onlineUsers)
+      onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', message);
+  });
+});
