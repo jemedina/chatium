@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionService } from 'src/app/services/session-service.service';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,12 +9,17 @@ import { SessionService } from 'src/app/services/session-service.service';
 })
 export class SidebarComponent implements OnInit {
   userInfo: any;
-  constructor(private sessionService: SessionService) { }
+
+  friendsList = [];
+  constructor(private sessionService: SessionService,
+    private chatService: ChatService) { }
 
   ngOnInit() {
     this.sessionService.getUserInfo().subscribe(resp => {
       this.userInfo = resp;
       console.log(this.userInfo);
+      this.chatService.friendsList.subscribe(friends => this.friendsList = friends);
+      this.chatService.refreshFriendsList(resp['_id']);
     });
   }
 

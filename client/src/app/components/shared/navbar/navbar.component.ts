@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit {
       console.log(data);
       if(data.state==this.SIGNOUT_SUCCESSFUL){
         this.route.navigate(['/login']);
+        window.location.reload();
       }
     });
   }

@@ -222,36 +222,67 @@ io.on('connection', function (socket) {
 
   socket.on('chat started', function (chatinfo) {
     console.log('chat started', chatinfo);
+    socket.alreadyConnected = true;
     if (chatinfo && chatinfo.ops && chatinfo.ops.emisor) {
       socket.chatinfo = chatinfo;
       onlineUsers[chatinfo.ops.emisor] = {
         socket: socket
       };
-      db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.emisor) },
-        {
-          $push: {
-            chats: {
-              chatid: 'mockid',
-              receptor: chatinfo.ops.receptor
-            }
-          }
-        });
-      db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.receptor) },
-        {
-          $push: {
-            chats: {
-              chatid: 'mockid',
-              receptor: chatinfo.ops.emisor
-            }
-          }
-        });
+      db.collection('users').findOne({ _id: new ObjectID(socket.chatinfo.ops.emisor) }, function (err, user) {
+        let i = user.chats.findIndex(chat => chat.receptor == chatinfo.ops.receptor);
+        //If chat between emisor and receptor not exists, create it
+        if (i < 0) {
+          db.collection('chats').insertOne({ messages: [] }, function (error, response) {
+            if (error) throw error;
+            //Generated chatid
+            chat_id = response.ops[0]._id;
+            socket.chatid = chat_id;
+
+            db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.emisor) },
+              {
+                $push: {
+                  chats: {
+                    chatid: chat_id,
+                    receptor: chatinfo.ops.receptor
+                  }
+                }
+              });
+            db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.receptor) },
+              {
+                $push: {
+                  chats: {
+                    chatid: chat_id,
+                    receptor: chatinfo.ops.emisor
+                  }
+                }
+              });
+          });
+          socket.emit('previous messages', []);
+        } else {
+          socket.chatid = user.chats[i].chatid;
+          db.collection('chats').findOne({_id: socket.chatid}, function(err, chat){
+            socket.emit('previous messages', chat);
+          })
+          
+        }
+      });
+
     }
 
   });
 
-  socket.on('send message', function (message) {
-    console.log("Message received", message);
+  socket.on('send message', function (recMessage) {
+    var receivedMessage = {
+      text: recMessage,
+      emisor: socket.chatinfo.ops.emisor,
+      date: new Date().getTime()
+    };
+    db.collection('chats').updateOne({ _id: socket.chatid }, {
+      $push: {
+        messages: receivedMessage
+      }
+    });
     if (socket.chatinfo.ops.receptor in onlineUsers)
-      onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', message);
+      onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
   });
 });

@@ -4,8 +4,8 @@
       <mat-card-header>
         <img mat-card-avatar [src]=" mockup_user.profile_pic">
         <mat-card-title>
-          <i *ngIf="mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#2EFE2E"></i>
-          <i *ngIf="!mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#585858"></i>
+          <!--<i *ngIf="mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#2EFE2E"></i>
+          <i *ngIf="!mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#585858"></i>-->
           {{userInfo?.name}}
         </mat-card-title>
       </mat-card-header>
@@ -17,9 +17,9 @@
     <!--Diseño para mensajes recibidos 1-1-->
 
     <span *ngFor="let mensaje of mensajes">
-      <div class="received-message message-text" *ngIf="mensaje.type == 'received'">
+      <div class="received-message message-text" *ngIf="mensaje.emisor == friendId">
         <mat-card>
-          {{mensaje.texto}}
+          {{mensaje.text}}
         </mat-card>
       </div>
 
@@ -39,9 +39,9 @@
 
 
       <!--Diseño para mensaje enviado-->
-      <div class="sent-message message-text" *ngIf="mensaje.type == 'sent'">
+      <div class="sent-message message-text" *ngIf="mensaje.emisor != friendId">
         <mat-card>
-          {{mensaje.texto}}
+          {{mensaje.text}}
         </mat-card>
       </div>
     </span>

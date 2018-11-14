@@ -16,6 +16,7 @@ export class ChatComponent implements OnInit {
   forma: FormGroup;
   friendId: string;
 
+  previousLoaded = false;
   userInfo: any;
 
   CHAT_TYPES = {
@@ -65,39 +66,46 @@ export class ChatComponent implements OnInit {
       } else if (map.type == this.CHAT_TYPES.ROOM) {
         this.chatType = this.CHAT_TYPES.ROOM
       } else {
+        console.log("Navigate")
         this.routerer.navigate(['/home/connect']);
         return;
       }
       this.friendId = map.friendId;
       this.searchService.getUserInfoById(this.friendId).subscribe(userInfo => {
         this.userInfo = userInfo;
-      });
 
-      this.sessionService.getUserInfo().subscribe( user => {
-        //BEGIN CHAT
-        var chatconfig = {
-          type: this.chatType
-        };
-        if (this.chatType == this.CHAT_TYPES.USER) {
-          chatconfig['ops'] = {
-            emisor: user['_id'],
-            receptor: this.friendId
+        this.sessionService.getUserInfo().subscribe(user => {
+          //BEGIN CHAT
+          var chatconfig = {
+            type: this.chatType
           };
-        } else {
-          chatconfig['ops'] = {
-            roomid: 'roomid'
-          };
-        }
-        if(user['state'] == 'ONLINE') {
-          this.chatService.beginChat(chatconfig);
-          this.chatService.getConnection().on('message received', (msg) => {
-            console.log(msg);
-            this.mensajes.push({
-              type: 'received',
-              texto: msg
+          if (this.chatType == this.CHAT_TYPES.USER) {
+            chatconfig['ops'] = {
+              emisor: user['_id'],
+              receptor: this.friendId,
+              receptorName: this.userInfo.name
+            };
+          } else {
+            chatconfig['ops'] = {
+              roomid: 'roomid'
+            };
+          }
+          if (user['state'] == 'ONLINE') {
+            this.chatService.beginChat(chatconfig);
+            this.chatService.getConnection().on('previous messages', chat => {
+              if(chat.messages)
+                this.mensajes = chat.messages;
+              console.log(this.mensajes);
+              this.previousLoaded = true;
             });
-          });
-        }
+            this.chatService.getConnection().on('message received', (msg) => {
+              if (this.previousLoaded) {
+                this.mensajes.push(msg);
+              }
+            });
+          }
+        });
+
       });
     });
   }
@@ -107,8 +115,7 @@ export class ChatComponent implements OnInit {
     if (this.forma.controls.mensaje.value) {
       this.chatService.sendMessage(this.forma.controls.mensaje.value);
       this.mensajes.push({
-        type: 'sent',
-        texto: this.forma.controls.mensaje.value
+        text: this.forma.controls.mensaje.value
       });
       /*this.mockup_mensaje = {
         texto: this.forma.controls.mensaje.value,
@@ -121,12 +128,12 @@ export class ChatComponent implements OnInit {
 
       this.forma.reset();
     }
-/*
-    this.mockup_mensaje_recibido = {
-      emisor: "babo",
-      texto: "Hola qlo, que anda haciendo compa :v",
-      fecha: new Date(),
-    }
-    this.mensajes_recibidos.push(this.mockup_mensaje_recibido)*/
+    /*
+        this.mockup_mensaje_recibido = {
+          emisor: "babo",
+          texto: "Hola qlo, que anda haciendo compa :v",
+          fecha: new Date(),
+        }
+        this.mensajes_recibidos.push(this.mockup_mensaje_recibido)*/
   }
 }

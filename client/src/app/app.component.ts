@@ -25,7 +25,8 @@ export class AppComponent implements OnInit {
       if(data && data.state === 'OFFLINE'){
         this.router.navigate(['/login']);
       } else if (data && data.state == 'ONLINE' && data.setup == true) {
-        this.router.navigate(['/home']);
+        if(this.router.url === '/login' || this.router.url === '/setup')
+          this.router.navigate(['/home']);
       } else if (data && data.state == 'ONLINE' && data.setup == false) {
         this.router.navigate(['/setup']);
       }

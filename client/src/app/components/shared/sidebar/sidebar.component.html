@@ -19,14 +19,14 @@
       <input class="form-control" type="text" placeholder="Search">
     </div>
     <div class="friends-list">
-      <div class="friend-item-wrapper">
-        <a routerLink="chat/2123">
+      <div class="friend-item-wrapper" *ngFor="let friend of friendsList">
+        <a routerLink="chat/user/{{friend.userid}}">
           <mat-card>
             <div class="friend-card">
               <img class="friend-card-image" src="/assets/images/default_profile_pic.png" alt="">
             </div>
             <div class="friend-card">
-              <div class="friend-card friend-card-name">User</div>
+              <div class="friend-card friend-card-name">{{friend.name}}</div>
             </div>
           </mat-card>
         </a>
