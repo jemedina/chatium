@@ -20,7 +20,10 @@ import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
 import { HomeComponent } from './components/home/home.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { ConnectpeopleComponent } from './components/connectpeople/connectpeople.component';
+import { ConnectpeopleComponent, DialogOverviewExampleDialog } from './components/connectpeople/connectpeople.component';
+
+
+import { FriendsFilterPipe } from './pipes/friends-filter.pipe';
 
 
 @NgModule({
@@ -33,7 +36,9 @@ import { ConnectpeopleComponent } from './components/connectpeople/connectpeople
     SidebarComponent,
     HomeComponent,
     ChatComponent,
-    ConnectpeopleComponent
+    ConnectpeopleComponent,
+    FriendsFilterPipe,
+    DialogOverviewExampleDialog
   ],
   imports: [
     BrowserModule,
@@ -49,6 +54,9 @@ import { ConnectpeopleComponent } from './components/connectpeople/connectpeople
     CountryLanguageService,
     SearchService,
     FormBuilder],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    DialogOverviewExampleDialog
+  ],
 })
 export class AppModule { }

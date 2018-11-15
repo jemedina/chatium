@@ -16,10 +16,10 @@
   <hr />
   <div class="sidebar-friends">
     <div class="search-friends">
-      <input class="form-control" type="text" placeholder="Search">
+      <input class="form-control" type="text" placeholder="Search" [(ngModel)]="findName">
     </div>
     <div class="friends-list">
-      <div class="friend-item-wrapper" *ngFor="let friend of friendsList">
+      <div class="friend-item-wrapper" *ngFor="let friend of (friendsList.reverse() | friendsFilter: findName) ">
         <a routerLink="chat/user/{{friend.userid}}">
           <mat-card>
             <div class="friend-card">

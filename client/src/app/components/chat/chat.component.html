@@ -12,11 +12,11 @@
     </mat-card>
   </div>
 
-  <div class="messages-section">
+  <div #messagesContainer class="messages-section">
 
     <!--Diseño para mensajes recibidos 1-1-->
 
-    <span *ngFor="let mensaje of mensajes">
+    <span *ngFor="let mensaje of mensajes; let last = last">
       <div class="received-message message-text" *ngIf="mensaje.emisor == friendId">
         <mat-card>
           {{mensaje.text}}
@@ -44,13 +44,14 @@
           {{mensaje.text}}
         </mat-card>
       </div>
+      <span *ngIf="last">{{scrollDownChatContainer()}}</span>
     </span>
   </div>
 
   <div class="input-form">
     <div class="input-area">
       <form [formGroup]="forma">
-        <textarea placeholder="Escribe aqui tu mensaje" class="mat-input mt-3" formControlName="mensaje"></textarea>
+        <textarea (keyup.enter)="enviar()" placeholder="Escribe aqui tu mensaje" class="mat-input mt-3" formControlName="mensaje"></textarea>
       </form>
     </div>
     <div class="send-button-area">

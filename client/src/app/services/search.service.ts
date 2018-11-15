@@ -20,4 +20,11 @@ export class SearchService {
         }
         return this.httpClient.post(this.DOMAIN + this.PORT + '/getUserInfoById', data);
     }
+
+    getRoomsByLanguage(langCode) {
+        let data = {
+            langCode: langCode
+        }
+        return this.httpClient.post(this.DOMAIN + this.PORT + '/getRoomsByLanguage', data);
+    }
 }

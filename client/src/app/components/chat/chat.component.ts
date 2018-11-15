@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup } from "@angular/forms";
 import { SearchService } from 'src/app/services/search.service';
@@ -13,6 +13,7 @@ import { SessionService } from 'src/app/services/session-service.service';
 
 
 export class ChatComponent implements OnInit {
+  @ViewChild('messagesContainer') private messagesContainer: ElementRef;
   forma: FormGroup;
   friendId: string;
 
@@ -25,7 +26,9 @@ export class ChatComponent implements OnInit {
   };
 
   chatType: string;
-
+  scrollDownChatContainer() {
+    this.messagesContainer.nativeElement.scrollTo(0, this.messagesContainer.nativeElement.scrollHeight + 1000);
+  } 
   mockup_user: any = {
     name: "User",
     profile_pic: "assets/images/default_profile_pic.png",
@@ -58,7 +61,7 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     this.forma = new FormGroup({
       'mensaje': new FormControl()
-    })
+    });
 
     this.router.params.subscribe(map => {
       if (map.type == this.CHAT_TYPES.USER) {
@@ -93,7 +96,7 @@ export class ChatComponent implements OnInit {
           if (user['state'] == 'ONLINE') {
             this.chatService.beginChat(chatconfig);
             this.chatService.getConnection().on('previous messages', chat => {
-              if(chat.messages)
+              if (chat.messages)
                 this.mensajes = chat.messages;
               console.log(this.mensajes);
               this.previousLoaded = true;
@@ -112,28 +115,12 @@ export class ChatComponent implements OnInit {
 
 
   enviar() {
-    if (this.forma.controls.mensaje.value) {
+    if (this.forma.controls.mensaje.value && this.forma.controls.mensaje.value.trim() != "") {
       this.chatService.sendMessage(this.forma.controls.mensaje.value);
       this.mensajes.push({
         text: this.forma.controls.mensaje.value
       });
-      /*this.mockup_mensaje = {
-        texto: this.forma.controls.mensaje.value,
-        emisor: "user",
-        receptor: this.friendId,
-        fecha: new Date()
-      }
-      console.log(this.mockup_mensaje);
-      this.mensajes_enviados.push(this.mockup_mensaje)*/
-
       this.forma.reset();
     }
-    /*
-        this.mockup_mensaje_recibido = {
-          emisor: "babo",
-          texto: "Hola qlo, que anda haciendo compa :v",
-          fecha: new Date(),
-        }
-        this.mensajes_recibidos.push(this.mockup_mensaje_recibido)*/
   }
 }

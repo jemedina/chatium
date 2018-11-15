@@ -1,4 +1,8 @@
-<section class="connect-search-params">
+<mat-button-toggle-group name="fontStyle" aria-label="Font Style" [(ngModel)]="searchMode">
+  <mat-button-toggle value="users">Users</mat-button-toggle>
+  <mat-button-toggle value="rooms">Rooms</mat-button-toggle>
+</mat-button-toggle-group>
+<section class="connect-search-params" *ngIf="searchMode == 'users'">
   <h5>Looking for people with:</h5>
   <div class="row">
     <div class="col col-xs-3">
@@ -36,36 +40,83 @@
     </div>
   </div>
 </section>
-<section class="connect-search-results">
+<section class="connect-search-params" *ngIf="searchMode == 'rooms'">
+  <h5>Looking for rooms:</h5>
+  <div class="row">
+    <div class="col col-xs-3">
+      <mat-form-field class="form-field-fullwidth" class="roomSearchLangBox">
+        <mat-select placeholder="Room Language" [(ngModel)]="roomSearchParams.langCode" (ngModelChange)="roomRefreshResults()">
+          <mat-option *ngFor="let language of supportedLanguages" [value]="language.code">
+            {{language.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col col-xs-3">
+      <button mat-raised-button color="primary" (click)="openNewRoomDialog()">Create a new room</button>
+    </div>
+  </div>
+</section>
+<section class="connect-search-results" *ngIf="searchMode == 'users'">
   <div class="row">
     <div class="suggestion-item col col-md-4" *ngFor="let user of foundUsers">
       <div class="roundcard">
         <div class="cover">
-          <button mat-mini-fab color="primary" title="Send message" routerLink = '/home/chat/user/{{user._id}}'>
+          <button mat-mini-fab color="primary" title="Send message" routerLink='/home/chat/user/{{user._id}}'>
             <i class="fas fa-comment fa-x2"></i>
           </button>
         </div>
         <div class="userinfo">
           <div class="userinfo-username">
             <h5>{{
-                ((user.name.length > 20)?
-                (user.name | slice:0:20)+'...':user.name) | uppercase
+              ((user.name.length > 20)?
+              (user.name | slice:0:20)+'...':user.name) | uppercase
               }}</h5>
           </div>
           <div class="row">
             <div class="userinfo-nativelang col col-xs-6">
               <div class="row"><b>Native</b></div>
               <div class="row">{{
-                  countryLanguage.getLanguageByCode(user.languageConfiguration.nativeLanguage).name}}</div>
+                countryLanguage.getLanguageByCode(user.languageConfiguration.nativeLanguage).name}}</div>
             </div>
             <div class="userinfo-learninglang col col-xs-6">
               <div class="row"><b>Learning</b></div>
               <div class="row">{{
-                  countryLanguage.getLanguageByCode(user.languageConfiguration.learningLanguage).name}}</div>
+                countryLanguage.getLanguageByCode(user.languageConfiguration.learningLanguage).name}}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="connect-search-results" *ngIf="searchMode == 'rooms'">
+  <div class="container" style="text-align: center">
+      <div class="roomResultItem">
+          <button class="headerButton" mat-stroked-button disabled>
+            <div class="row">
+                <div class="rightSeparator" style="width: 25%">No. of members</div>
+
+                <div class="rightSeparator" style="width: 60%">Name</div>
+
+                <div class="" style="width: 15%">Language</div>
+            </div>
+          </button>
+      </div>
+      <div class="roomResultItem roomItemBody" *ngFor="let room of foundRooms">
+          <button mat-raised-button>
+            <div class="row">
+                <div class="rightSeparator" style="width: 25%">{{room.members.length}}</div>
+                <div class="rightSeparator" style="width: 60%">{{room.name}}</div>
+                <div class="" style="width: 15%">{{
+                    countryLanguage
+                       .getLanguageByCode(
+                         room.langCode).name
+                }}</div>
+            </div>
+          </button>
+      </div>
+
   </div>
 </section>

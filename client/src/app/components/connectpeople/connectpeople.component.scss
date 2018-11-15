@@ -1,4 +1,5 @@
 .connect-search-params {
+    min-width: 748px;
     height: 150px;
     box-shadow: 0 4px 2px -2px gray;
     .col {
@@ -14,8 +15,10 @@
 }
 .connect-search-results {
     padding-top: 20px;
+    margin-top: 5px;
     overflow: auto;
-    height: calc(100% - 150px);
+    overflow-x: hidden;
+    height: calc(100% - 230px);
     .suggestion-item {
         text-align: center;
         .roundcard {
@@ -70,4 +73,32 @@
             }
         }
     }
+}
+mat-button-toggle-group {
+    margin-left:20px;
+    margin-top: 10px;
+}
+
+.roomSearchLangBox {
+    margin-left: 50px;
+}
+.roomResultItem {
+    width: 100%;
+    button {
+        min-width: 650px;
+        @media screen and (max-width: 1033px) {
+            width:  100%;
+        }
+    }
+    .headerButton{
+        background-color: white;
+        color: black !important;
+    }
+    .rightSeparator {
+        border-right: solid black 1px;
+    }
+}
+
+.roomItemBody {
+    margin-top: 5px;
 }

@@ -27,8 +27,11 @@ export class ChatService {
 
   beginChat(chatconfig) {
     this.socket.removeAllListeners();
-    this.refreshFriendsList(chatconfig.ops.emisor);
     this.socket.emit('chat started', chatconfig);
+    this.socket.on('chat generated', _ => {
+      this.refreshFriendsList(chatconfig.ops.emisor);
+    });
+    
   }
 
   closeChat() {
