@@ -79,7 +79,8 @@ app.get('/singOut', function (req, res) {
     session_store.get(connect_sid, function (error, session) {
       req.session.destroy(function (err) {
         //console.log("ID USER: ", session.userid);
-        db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, { $set: { state: "OFFLINE" } });
+        if (session && session.userid)
+          db.collection('users').updateOne({ _id: new ObjectID(session.userid) }, { $set: { state: "OFFLINE" } });
         res.end(JSON.stringify({ state: 1, error: null }));
       })
     })
@@ -140,6 +141,13 @@ app.post('/getUserInfoById', function (req, res) {
   });
 });
 
+app.post('/getRoomById', function (req, res) {
+  db.collection('rooms').findOne({ _id: new ObjectID(req.body.id) }, function (err, result) {
+    if (err) throw err;
+    res.end(JSON.stringify(result));
+  });
+});
+
 
 
 app.post('/setupLanguages', function (req, res) {
@@ -196,6 +204,44 @@ app.post('/searchConnections', function (req, res) {
   }
 });
 
+app.post('/getRoomsByLanguage', function (req, res) {
+  var roomParams = req.body;
+  db.collection('rooms').find({
+    langCode: roomParams.langCode
+  }).toArray(function (err, results) {
+    if (err) throw err;
+    res.end(JSON.stringify(results));
+  });
+});
+
+
+app.post('/createRoom', function (req, res) {
+  var roomDetails = req.body;
+  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
+  if (connect_sid) {
+    session_store.get(connect_sid, function (error, session) {
+      roomDetails.members = [session.userid];
+      db.collection('chats').insertOne({ messages: [] }, function (error, insertedChat) {
+        roomDetails.chatid = insertedChat.ops[0]._id;
+        db.collection('rooms').insertOne(roomDetails, (error, roomResult) => {
+          if (error) throw error;
+          //PUSH CHAT TO USER CHATS
+          db.collection('users').updateOne({ _id: new ObjectID(session.userid) },
+            {
+              $push: {
+                chats: {
+                  chatid: roomResult.ops[0]._id,
+                  type: 'room'
+                }
+              }
+            });
+          res.end(JSON.stringify(roomResult.ops[0]));
+        });
+      });
+    });
+  }
+});
+
 
 function getUserInfoByObjectID(_id, callback) {
   db.collection('users').findOne({ _id: new ObjectID(_id) }, function (err, result) {
@@ -223,7 +269,8 @@ io.on('connection', function (socket) {
   socket.on('chat started', function (chatinfo) {
     console.log('chat started', chatinfo);
     socket.alreadyConnected = true;
-    if (chatinfo && chatinfo.ops && chatinfo.ops.emisor) {
+    if (chatinfo && chatinfo.ops && chatinfo.ops.emisor && chatinfo.type == 'user') {
+      console.log("CHAT TYPE USER");
       socket.chatinfo = chatinfo;
       onlineUsers[chatinfo.ops.emisor] = {
         socket: socket
@@ -243,7 +290,8 @@ io.on('connection', function (socket) {
                 $push: {
                   chats: {
                     chatid: chat_id,
-                    receptor: chatinfo.ops.receptor
+                    receptor: chatinfo.ops.receptor,
+                    type: 'single'
                   }
                 }
               });
@@ -252,23 +300,39 @@ io.on('connection', function (socket) {
                 $push: {
                   chats: {
                     chatid: chat_id,
-                    receptor: chatinfo.ops.emisor
+                    receptor: chatinfo.ops.emisor,
+                    type: 'single'
                   }
                 }
               });
+            //This is for our own friend list
+            socket.emit('chat generated', chatinfo.ops.receptor);
+            if (socket.chatinfo.ops.receptor in onlineUsers) {
+              //This is for our friend freind's list
+              onlineUsers[socket.chatinfo.ops.receptor].socket.emit('chat generated', chatinfo.ops.emisor);
+            }
           });
           socket.emit('previous messages', []);
         } else {
           socket.chatid = user.chats[i].chatid;
-          db.collection('chats').findOne({_id: socket.chatid}, function(err, chat){
+          db.collection('chats').findOne({ _id: socket.chatid }, function (err, chat) {
             socket.emit('previous messages', chat);
           })
-          
         }
       });
 
+    } else if (chatinfo && chatinfo.ops && chatinfo.type == 'room') {
+      //USER WANTS TO LOAD A ROOM
+      console.log("CHAT TYPE ROOM");
+      socket.chatid = chatinfo.ops.chatid;
+      onlineUsers[chatinfo.ops.emisor] = {
+        socket: socket
+      };
+      db.collection('chats').findOne({ _id: socket.chatid }, function (err, chat) {
+        console.log("findOne({ _id: socket.chatid } ", socket.chatid, chat);
+        socket.emit('previous messages', chat);
+      });
     }
-
   });
 
   socket.on('send message', function (recMessage) {

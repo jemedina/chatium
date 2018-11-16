@@ -15,41 +15,33 @@ import { SessionService } from 'src/app/services/session-service.service';
 export class ChatComponent implements OnInit {
   @ViewChild('messagesContainer') private messagesContainer: ElementRef;
   forma: FormGroup;
-  friendId: string;
+
+  private chatType: string;
 
   previousLoaded = false;
   userInfo: any;
 
-  CHAT_TYPES = {
+  currentUser: any;
+
+  readonly CHAT_TYPES = {
     USER: 'user',
     ROOM: 'room'
   };
 
-  chatType: string;
+  chatTitle: string = "";
+
   scrollDownChatContainer() {
     this.messagesContainer.nativeElement.scrollTo(0, this.messagesContainer.nativeElement.scrollHeight + 1000);
-  } 
+  }
   mockup_user: any = {
     name: "User",
     profile_pic: "assets/images/default_profile_pic.png",
     status: true
   }
 
-  mockup_mensaje: {
-    texto: string,
-    emisor: string,
-    receptor: string,
-    fecha: any
-  }
-
-  mockup_mensaje_recibido: {
-    emisor: string,
-    texto: string,
-    fecha: any,
-  }
-
 
   mensajes = []
+  friendId: any;
 
   constructor(
     private router: ActivatedRoute,
@@ -64,37 +56,57 @@ export class ChatComponent implements OnInit {
     });
 
     this.router.params.subscribe(map => {
-      if (map.type == this.CHAT_TYPES.USER) {
-        this.chatType = this.CHAT_TYPES.USER;
-      } else if (map.type == this.CHAT_TYPES.ROOM) {
-        this.chatType = this.CHAT_TYPES.ROOM
-      } else {
-        console.log("Navigate")
+      if (map.type != this.CHAT_TYPES.USER && map.type != this.CHAT_TYPES.ROOM) {
         this.routerer.navigate(['/home/connect']);
         return;
       }
-      this.friendId = map.friendId;
-      this.searchService.getUserInfoById(this.friendId).subscribe(userInfo => {
-        this.userInfo = userInfo;
+      this.chatType = map.type;
+      if (map.type == this.CHAT_TYPES.USER) {
+        this.friendId = map.id;
+        this.searchService.getUserInfoById(map.id).subscribe(userInfo => {
+          this.userInfo = userInfo;
+          this.chatTitle = userInfo['name'];
 
-        this.sessionService.getUserInfo().subscribe(user => {
-          //BEGIN CHAT
-          var chatconfig = {
-            type: this.chatType
-          };
-          if (this.chatType == this.CHAT_TYPES.USER) {
+          this.sessionService.getUserInfo().subscribe(user => {
+            //BEGIN CHAT
+            var chatconfig = {
+              type: map.type
+            };
+
             chatconfig['ops'] = {
               emisor: user['_id'],
-              receptor: this.friendId,
+              receptor: map.id,
               receptorName: this.userInfo.name
             };
-          } else {
-            chatconfig['ops'] = {
-              roomid: 'roomid'
-            };
-          }
-          if (user['state'] == 'ONLINE') {
-            this.chatService.beginChat(chatconfig);
+
+            if (user['state'] == 'ONLINE') {
+              this.chatService.beginChat(chatconfig);
+              this.chatService.getConnection().on('previous messages', chat => {
+                if (chat.messages)
+                  this.mensajes = chat.messages;
+                console.log(this.mensajes);
+                this.previousLoaded = true;
+              });
+              this.chatService.getConnection().on('message received', (msg) => {
+                if (this.previousLoaded) {
+                  this.mensajes.push(msg);
+                }
+              });
+            }
+          });
+        });
+      } else if (map.type == this.CHAT_TYPES.ROOM) {
+        this.sessionService.getUserInfo().subscribe(user => {
+          this.searchService.getRoomById(map.id).subscribe(room => {
+            this.chatTitle = room['name'];
+            console.log("ROOOM", room);
+            this.chatService.beginChat({
+              type: map.type,
+              ops: {
+                chatid: room['chatid'],
+                emisor: user['_id']
+              }
+            });
             this.chatService.getConnection().on('previous messages', chat => {
               if (chat.messages)
                 this.mensajes = chat.messages;
@@ -106,10 +118,9 @@ export class ChatComponent implements OnInit {
                 this.mensajes.push(msg);
               }
             });
-          }
+          });
         });
-
-      });
+      }
     });
   }
 

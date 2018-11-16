@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import * as io from 'socket.io-client';
 import { SearchService } from 'src/app/services/search.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,14 @@ export class ChatService {
   readonly DOMAIN = 'http://localhost:';
 
   private socket: SocketIOClient.Socket;
-  private friends:any = [];
+  private friends: any = [];
 
 
   private friendsSource = new BehaviorSubject(this.friends);
   friendsList = this.friendsSource.asObservable();
 
-  constructor(private searchService: SearchService) {
+  constructor(private searchService: SearchService,
+    private httpService: HttpClient) {
     this.socket = io('http://localhost:3000');
   }
 
@@ -29,9 +31,14 @@ export class ChatService {
     this.socket.removeAllListeners();
     this.socket.emit('chat started', chatconfig);
     this.socket.on('chat generated', _ => {
-      this.refreshFriendsList(chatconfig.ops.emisor);
+      if(chatconfig && chatconfig.ops && chatconfig.ops.emisor)
+        this.refreshFriendsList(chatconfig.ops.emisor);
     });
-    
+
+  }
+
+  createRoom(roomDetails) {
+    return this.httpService.post(this.DOMAIN + this.PORT + "/createRoom", roomDetails, { withCredentials: true });
   }
 
   closeChat() {
@@ -42,24 +49,40 @@ export class ChatService {
     this.socket.emit('send message', message);
   }
 
-  getConnection(){
+  getConnection() {
     return this.socket;
   }
 
   refreshFriendsList(id) {
     console.log("refreshing friends list");
-    var newFriends = [];
+    var newFriends = [];
     this.searchService.getUserInfoById(id).subscribe(user => {
-      user['chats'].forEach( chat => {
-        this.searchService.getUserInfoById(chat.receptor).subscribe(receptorUser => {
-          newFriends.push({
-            userid: receptorUser['_id'],
-            name: receptorUser['name']
-          });
-          this.friends = newFriends;
-          this.friendsSource.next(this.friends);
+      if (user && user.hasOwnProperty('chats')) {
+        user['chats'].forEach(chat => {
+          if(chat && chat.type == 'room') {
+            console.log("ROOM ", chat);
+            this.searchService.getRoomById(chat.chatid).subscribe(room => {
+              newFriends.push({
+                isRoom: true,
+                name: room['name'],
+                userid: room['_id']
+              });
+              this.friends = newFriends;
+              this.friendsSource.next(this.friends);
+            });
+          } else {
+            this.searchService.getUserInfoById(chat.receptor).subscribe(receptorUser => {
+              newFriends.push({
+                isRoom: false,
+                userid: receptorUser['_id'],
+                name: receptorUser['name']
+              });
+              this.friends = newFriends;
+              this.friendsSource.next(this.friends);
+            });
+          }
         });
-      });
+      }
     });
   }
 }

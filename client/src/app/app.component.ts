@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
   title = 'chatium';
 
-  constructor(private router: Router, private sessionService: SessionService){}
+  constructor(private router: Router, private sessionService: SessionService) { }
 
   ngOnInit() {
     this.verifySession();

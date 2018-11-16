@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryLanguageService } from 'src/app/services/country-language.service';
 import { SessionService } from 'src/app/services/session-service.service';
 import { SearchService } from 'src/app/services/search.service';
+import { ChatService } from 'src/app/services/chat.service';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -45,7 +46,8 @@ export class ConnectpeopleComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private countryLanguage: CountryLanguageService,
     private searchService: SearchService,
-    public newRoomDialog: MatDialog) { }
+    public newRoomDialog: MatDialog,
+    private chatService: ChatService) { }
 
   ngOnInit() {
     this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
@@ -82,8 +84,11 @@ export class ConnectpeopleComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was close', result);
       if(result && result.name && result.langCode) {
-        result.members = ["dummy element"];
-        this.foundRooms.push(result);
+        this.chatService.createRoom(result).subscribe(res => {
+          console.log("Response ", res);
+          this.chatService.refreshFriendsList(this.userInfo._id);
+          //MOVE TO CHAT VIEW
+        });
       }
       
     });

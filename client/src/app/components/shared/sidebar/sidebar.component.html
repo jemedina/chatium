@@ -20,10 +20,11 @@
     </div>
     <div class="friends-list">
       <div class="friend-item-wrapper" *ngFor="let friend of (friendsList.reverse() | friendsFilter: findName) ">
-        <a routerLink="chat/user/{{friend.userid}}">
+        <a routerLink="chat/{{ friend.isRoom?'room':'user' }}/{{friend.userid}}">
           <mat-card>
             <div class="friend-card">
-              <img class="friend-card-image" src="/assets/images/default_profile_pic.png" alt="">
+              <img class="friend-card-image" src="/assets/images/default_profile_pic.png" alt="" *ngIf="!friend.isRoom">
+              <span *ngIf="friend.isRoom">(ROOM) </span>
             </div>
             <div class="friend-card">
               <div class="friend-card friend-card-name">{{friend.name}}</div>

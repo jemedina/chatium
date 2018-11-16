@@ -2,11 +2,11 @@
   <div class="user-secccion sticky-top">
     <mat-card class="animated fadeIn fast">
       <mat-card-header>
-        <img mat-card-avatar [src]=" mockup_user.profile_pic">
+        <img mat-card-avatar [src]=" mockup_user.profile_pic" *ngIf="chatType == 'user'">
         <mat-card-title>
           <!--<i *ngIf="mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#2EFE2E"></i>
           <i *ngIf="!mockup_user.status" class="fas fa-circle fa-xs mx-1" style="color:#585858"></i>-->
-          {{userInfo?.name}}
+          {{chatTitle}}
         </mat-card-title>
       </mat-card-header>
     </mat-card>
@@ -17,7 +17,7 @@
     <!--Diseño para mensajes recibidos 1-1-->
 
     <span *ngFor="let mensaje of mensajes; let last = last">
-      <div class="received-message message-text" *ngIf="mensaje.emisor == friendId">
+      <div class="received-message message-text" *ngIf="chatType == 'user' && mensaje.emisor == friendId">
         <mat-card>
           {{mensaje.text}}
         </mat-card>
@@ -25,17 +25,18 @@
 
 
       <!--Diseño mensaje recibidos rooms-->
-      <!--<div class="received-message message-text" *ngFor="let mensaje of mensajes_recibidos">
+      <div class="received-message message-text" *ngIf="chatType == 'room'">
       <mat-card>
         <mat-card-subtitle>
           <strong>
-            {{mensaje.emisor}}
+            EMISOR
           </strong>
-          {{mensaje.fecha | date :medium}}
+          <!--{{new Date() | date :medium}}-->
+          date
         </mat-card-subtitle>
-        {{mensaje.texto}}
+        TEXTO PRUEBA
       </mat-card>
-    </div>-->
+    </div>
 
 
       <!--Diseño para mensaje enviado-->

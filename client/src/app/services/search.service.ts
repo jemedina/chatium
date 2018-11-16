@@ -27,4 +27,11 @@ export class SearchService {
         }
         return this.httpClient.post(this.DOMAIN + this.PORT + '/getRoomsByLanguage', data);
     }
+
+    getRoomById(id){
+        let data = {
+            id: id
+        }
+        return this.httpClient.post(this.DOMAIN + this.PORT + '/getRoomById', data);
+    }
 }

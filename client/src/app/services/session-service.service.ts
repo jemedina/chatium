@@ -42,7 +42,7 @@ export class SessionService {
     return this.httpClient.post(this.DOMAIN + this.PORT + '/regist', newUser, { withCredentials: true });
   }
 
-  setupUserLanguages(userLanguagesConifg){
+  setupUserLanguages(userLanguagesConifg) {
     console.log(userLanguagesConifg);
     return this.httpClient.post(this.DOMAIN + this.PORT + '/setupLanguages', userLanguagesConifg, { withCredentials: true });
   }
@@ -52,8 +52,8 @@ export class SessionService {
     return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo', { withCredentials: true });
   }
 
-  signOut(){
-    return this.httpClient.get(this.DOMAIN + this.PORT + '/singOut', { withCredentials : true});
+  signOut() {
+    return this.httpClient.get(this.DOMAIN + this.PORT + '/singOut', { withCredentials: true });
   }
 
   constructor(private httpClient: HttpClient) { }

@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     children: [
-      { path: 'chat/:type/:friendId', component: ChatComponent },
+      { path: 'chat/:type/:id', component: ChatComponent },
       { path: 'connect', component: ConnectpeopleComponent },
       { path: '**', component: ConnectpeopleComponent }
     ]
