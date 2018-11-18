@@ -280,7 +280,7 @@ function getUserInfoByObjectID(_id, callback) {
 }
 
 /****************** CHAT LOGIC ***********************/
-
+const ACK = 1;
 var onlineUsers = {};
 io.on('connection', function (socket) {
 
@@ -294,12 +294,15 @@ io.on('connection', function (socket) {
 
 
   socket.on('chat started', function (chatinfo) {
+    console.log('chat started', chatinfo);
+    socket.emit('chat created', 'ola');
     socket.alreadyConnected = true;
     if (chatinfo && chatinfo.ops && chatinfo.ops.emisor && chatinfo.type == 'user') {
       socket.chatinfo = chatinfo;
-      onlineUsers[chatinfo.ops.emisor] = {
-        socket: socket
-      };
+      if(!(chatinfo.ops.emisor in onlineUsers))
+        onlineUsers[chatinfo.ops.emisor] = {
+          socket: socket
+        };
       db.collection('users').findOne({ _id: new ObjectID(socket.chatinfo.ops.emisor) }, function (err, user) {
         let i = user.chats.findIndex(chat => chat.receptor == chatinfo.ops.receptor);
         //If chat between emisor and receptor not exists, create it
@@ -319,6 +322,13 @@ io.on('connection', function (socket) {
                     type: 'single'
                   }
                 }
+              }, _ => {
+                //Notify to emisor that chat has been created
+                socket.emit('new chat created', ACK);
+                //Load previous chats
+                socket.emit('previous messages', {
+                  messages: []
+                });
               });
             db.collection('users').updateOne({ _id: new ObjectID(socket.chatinfo.ops.receptor) },
               {
@@ -329,16 +339,13 @@ io.on('connection', function (socket) {
                     type: 'single'
                   }
                 }
+              }, _ => {
+                //Notify to receptor that chat has been created
+                if(socket.chatinfo.ops.receptor in onlineUsers) {
+                  console.log("Notifying ACK to ", socket.chatinfo.ops.receptor);
+                  onlineUsers[socket.chatinfo.ops.receptor].socket.emit('new chat created', ACK);
+                }
               });
-            //This is for our own friend list
-            socket.emit('chat generated', chatinfo.ops.receptor);
-            if (socket.chatinfo.ops.receptor in onlineUsers) {
-              //This is for our friend freind's list
-              onlineUsers[socket.chatinfo.ops.receptor].socket.emit('chat generated', chatinfo.ops.emisor);
-            }
-          });
-          socket.emit('previous messages', {
-            messages: []
           });
         } else {
           socket.chatid = user.chats[i].chatid;
@@ -352,9 +359,6 @@ io.on('connection', function (socket) {
       //USER WANTS TO LOAD A ROOM
       socket.chatid = chatinfo.ops.chatid;
       socket.chatinfo = chatinfo;
-      onlineUsers[chatinfo.ops.emisor] = {
-        socket: socket
-      };
       db.collection('chats').findOne({ _id: new ObjectID(socket.chatid) }, function (err, chatRes) {
         socket.emit('previous messages', chatRes);
       });
@@ -377,10 +381,13 @@ io.on('connection', function (socket) {
   });
 
 
-  socket.on('start connection', function (userid) {
-    onlineUsers[userid] = {
-      socket: socket
-    };
-    console.log("Online users: " + Object.keys(onlineUsers).length);
-  })
+  socket.on('start connection', function (currentUser) {
+    if (!(currentUser._id in onlineUsers))
+      onlineUsers[currentUser._id] = {
+        socket: socket
+      };
+
+    console.log('start connection', currentUser);
+    console.log('onlineUsers', Object.keys(onlineUsers));
+  });
 });

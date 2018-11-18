@@ -5,6 +5,7 @@ import { SessionService } from 'src/app/services/session-service.service';
 import { SearchService } from 'src/app/services/search.service';
 import { ChatService } from 'src/app/services/chat.service';
 import { Router } from '@angular/router';
+import { SidebarComponent } from 'src/app/components/shared/sidebar/sidebar.component';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -15,6 +16,7 @@ export interface NewRoomDialogData {
 
 
 @Component({
+  providers: [SidebarComponent],
   selector: 'app-connectpeople',
   templateUrl: './connectpeople.component.html',
   styleUrls: ['./connectpeople.component.scss']
@@ -49,7 +51,8 @@ export class ConnectpeopleComponent implements OnInit {
     private searchService: SearchService,
     public newRoomDialog: MatDialog,
     private chatService: ChatService,
-    private router: Router) { }
+    private router: Router,
+    private sidebarComponent: SidebarComponent) { }
 
   ngOnInit() {
     this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
@@ -105,7 +108,7 @@ export class ConnectpeopleComponent implements OnInit {
       if(result && result.name && result.langCode) {
         this.chatService.createRoom(result).subscribe(res => {
           console.log("Response ", res);
-          this.chatService.refreshFriendsList(this.userInfo._id);
+          this.sidebarComponent.refreshFriendsList();
           //MOVE TO CHAT VIEW
         });
       }

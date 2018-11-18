@@ -4,8 +4,10 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { SearchService } from 'src/app/services/search.service';
 import { ChatService } from 'src/app/services/chat.service';
 import { SessionService } from 'src/app/services/session-service.service';
+import { SidebarComponent } from 'src/app/components/shared/sidebar/sidebar.component';
 
 @Component({
+  providers: [SidebarComponent],
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
@@ -49,7 +51,8 @@ export class ChatComponent implements OnInit {
     private searchService: SearchService,
     private chatService: ChatService,
     private routerer: Router,
-    private sessionService: SessionService) { }
+    private sessionService: SessionService,
+    private sidebarComponent: SidebarComponent) { }
 
   ngOnInit() {
     this.mensajes = [];
@@ -58,6 +61,8 @@ export class ChatComponent implements OnInit {
     this.forma = new FormGroup({
       'mensaje': new FormControl()
     });
+
+    //this.chatService.clearListeners();
 
     this.router.params.subscribe(map => {
       if (map.type != this.CHAT_TYPES.USER && map.type != this.CHAT_TYPES.ROOM) {
@@ -84,18 +89,26 @@ export class ChatComponent implements OnInit {
             };
 
             if (user['state'] == 'ONLINE') {
-              this.chatService.beginChat(chatconfig);
               this.chatService.getConnection().on('previous messages', chat => {
                 if (chat.messages)
                   this.mensajes = chat.messages;
                 console.log(this.mensajes);
                 this.previousLoaded = true;
+                this.sidebarComponent.refreshFriendsList();
               });
               this.chatService.getConnection().on('message received', (msg) => {
                 if (this.previousLoaded) {
                   this.mensajes.push(msg);
                 }
               });
+
+
+            this.chatService.getConnection().on('new chat created', (msg) => {
+              console.log("Chat generate!!!!!!", msg);
+              this.sidebarComponent.refreshFriendsList();
+            });
+
+              this.chatService.beginChat(chatconfig);
             }
           });
         });
@@ -116,11 +129,16 @@ export class ChatComponent implements OnInit {
                 this.mensajes = chat.messages;
               console.log(this.mensajes);
               this.previousLoaded = true;
+              this.sidebarComponent.refreshFriendsList();
             });
             this.chatService.getConnection().on('message received', (msg) => {
               if (this.previousLoaded) {
                 this.mensajes.push(msg);
               }
+            });
+            this.chatService.getConnection().on('new chat created', (msg) => {
+              console.log("Chat generate!!!!!!", msg);
+              this.sidebarComponent.refreshFriendsList();
             });
           });
         });

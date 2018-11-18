@@ -19,15 +19,15 @@
       <input class="form-control" type="text" placeholder="Search" [(ngModel)]="findName">
     </div>
     <div class="friends-list">
-      <div class="friend-item-wrapper" *ngFor="let friend of (friendsList.reverse() | friendsFilter: findName) ">
-        <a routerLink="chat/{{ friend.isRoom?'room':'user' }}/{{friend.userid}}">
+      <div class="friend-item-wrapper" *ngFor="let chat of (chatList.reverse() | friendsFilter: findName) ">
+        <a routerLink="chat/{{ chat.isRoom?'room':'user' }}/{{chat.userid}}">
           <mat-card>
             <div class="friend-card">
-              <img class="friend-card-image" src="/assets/images/default_profile_pic.png" alt="" *ngIf="!friend.isRoom">
-              <span *ngIf="friend.isRoom">(ROOM) </span>
+              <img class="friend-card-image" src="/assets/images/default_profile_pic.png" alt="" *ngIf="!chat.isRoom">
+              <span *ngIf="chat.isRoom">(ROOM) </span>
             </div>
             <div class="friend-card">
-              <div class="friend-card friend-card-name">{{friend.name}}</div>
+              <div class="friend-card friend-card-name">{{chat.name}}</div>
             </div>
           </mat-card>
         </a>
