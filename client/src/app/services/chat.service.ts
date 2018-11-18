@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as io from 'socket.io-client';
 import { SearchService } from 'src/app/services/search.service';
 import { HttpClient } from '@angular/common/http';
+import { SessionService } from 'src/app/services/session-service.service'
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,10 @@ export class ChatService {
   friendsList = this.friendsSource.asObservable();
 
   constructor(private searchService: SearchService,
-    private httpService: HttpClient) {
+    private httpService: HttpClient,
+    private sessionService: SessionService) {
     this.socket = io('http://localhost:3000');
+    this.socket.emit('start connection', this.sessionService.getCookieUserId());
   }
 
   closeConnection() {
@@ -30,9 +33,10 @@ export class ChatService {
   beginChat(chatconfig) {
     this.socket.removeAllListeners();
     this.socket.emit('chat started', chatconfig);
-    this.socket.on('chat generated', _ => {
-      if(chatconfig && chatconfig.ops && chatconfig.ops.emisor)
-        this.refreshFriendsList(chatconfig.ops.emisor);
+    this.socket.on('chat generated', newChat => {
+      console.log('chat generated evnt', newChat);
+      if(newChat)
+        this.refreshFriendsList(newChat);
     });
 
   }
@@ -51,6 +55,15 @@ export class ChatService {
 
   getConnection() {
     return this.socket;
+  }
+
+  joinRoom(userid, roomid) {
+    let data = {
+      userid: userid,
+      roomid: roomid
+    };
+
+    return this.httpService.post(this.DOMAIN + this.PORT + '/joinRoom', data, {withCredentials:true});
   }
 
   refreshFriendsList(id) {

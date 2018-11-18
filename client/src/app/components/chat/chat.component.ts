@@ -42,6 +42,7 @@ export class ChatComponent implements OnInit {
 
   mensajes = []
   friendId: any;
+  userId: any;
 
   constructor(
     private router: ActivatedRoute,
@@ -51,6 +52,9 @@ export class ChatComponent implements OnInit {
     private sessionService: SessionService) { }
 
   ngOnInit() {
+    this.mensajes = [];
+    this.userId = this.sessionService.getCookieUserId();
+    console.log(this.userId);
     this.forma = new FormGroup({
       'mensaje': new FormControl()
     });
@@ -129,7 +133,8 @@ export class ChatComponent implements OnInit {
     if (this.forma.controls.mensaje.value && this.forma.controls.mensaje.value.trim() != "") {
       this.chatService.sendMessage(this.forma.controls.mensaje.value);
       this.mensajes.push({
-        text: this.forma.controls.mensaje.value
+        text: this.forma.controls.mensaje.value,
+        emisor: this.userId
       });
       this.forma.reset();
     }

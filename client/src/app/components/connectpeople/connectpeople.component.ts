@@ -4,6 +4,7 @@ import { CountryLanguageService } from 'src/app/services/country-language.servic
 import { SessionService } from 'src/app/services/session-service.service';
 import { SearchService } from 'src/app/services/search.service';
 import { ChatService } from 'src/app/services/chat.service';
+import { Router } from '@angular/router';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -47,7 +48,8 @@ export class ConnectpeopleComponent implements OnInit {
     private countryLanguage: CountryLanguageService,
     private searchService: SearchService,
     public newRoomDialog: MatDialog,
-    private chatService: ChatService) { }
+    private chatService: ChatService,
+    private router: Router) { }
 
   ngOnInit() {
     this.supportedLanguages = this.countryLanguage.getSupportedLanguages();
@@ -69,12 +71,29 @@ export class ConnectpeopleComponent implements OnInit {
   refreshResults() {
     this.searchService.getResultsByLanguagePreferences(this.searchParams).subscribe(res => {
       this.foundUsers = res;
-    });
+    }); 
+  }
+
+  roomRefreshResults() {
     this.searchService.getRoomsByLanguage(this.roomSearchParams.langCode).subscribe(res => {
       this.foundRooms = res;
     });
   }
 
+  joinRoom(roomId){
+    this.searchService.getRoomById(roomId).subscribe(room => {
+      console.log(this.sessionService.getCookieUserId(), room['members']);
+      if(~room['members'].indexOf(this.sessionService.getCookieUserId())) {
+        console.log("Member already in room");
+        this.router.navigate(['home','chat','room',room['_id']]);
+      } else {
+        this.chatService.joinRoom(this.sessionService.getCookieUserId(), room['_id']).subscribe(res => {
+          this.router.navigate(['home','chat','room',room['_id']]);
+        });
+      }
+      
+    });
+  }
   openNewRoomDialog() {
     const dialogRef = this.newRoomDialog.open(DialogOverviewExampleDialog, {
       width: '250px',

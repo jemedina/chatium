@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { CookieService } from 'ngx-cookie-service';
 
 
 import { AppComponent } from './app.component';
@@ -49,6 +49,7 @@ import { FriendsFilterPipe } from './pipes/friends-filter.pipe';
     CustomMaterialModule
   ],
   providers: [
+    CookieService,
     SessionService,
     ChatService,
     CountryLanguageService,

@@ -25,22 +25,22 @@
 
 
       <!--Diseño mensaje recibidos rooms-->
-      <div class="received-message message-text" *ngIf="chatType == 'room'">
+      <div class="received-message message-text" *ngIf="chatType == 'room' && mensaje.emisor != userId">
       <mat-card>
         <mat-card-subtitle>
           <strong>
-            EMISOR
+            {{mensaje.emisor}}
           </strong>
           <!--{{new Date() | date :medium}}-->
-          date
+          {{mensaje.date | date :medium}}
         </mat-card-subtitle>
-        TEXTO PRUEBA
+        {{mensaje.text}}
       </mat-card>
     </div>
 
 
       <!--Diseño para mensaje enviado-->
-      <div class="sent-message message-text" *ngIf="mensaje.emisor != friendId">
+      <div class="sent-message message-text" *ngIf="mensaje.emisor == userId">
         <mat-card>
           {{mensaje.text}}
         </mat-card>

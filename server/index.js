@@ -57,10 +57,11 @@ app.post('/login', function (req, res) {
   db.collection('users').findOne({ email: email, password: password }, function (err, response) {
     if (err) throw err;
     if (response) {
+      res.cookie('userid', response._id.toString());
       user_id = response._id;
       req.session.userid = user_id;
       stat = 1;
-      db.collection('users').updateOne({ _id: user_id }, { $set: { state: "ONLINE" } })
+      db.collection('users').updateOne({ _id: user_id }, { $set: { state: "ONLINE" } });
       //console.log("Busqueda correcta y campos actualizados, status=", stat);
       res.end(JSON.stringify({ status: stat, error: null }));
     } else {
@@ -104,6 +105,7 @@ app.post('/regist', function (req, res) {
       // return 
     } else {
       req.session.userid = response.ops[0]._id;
+      res.cookie('userid', response.ops[0]._id.toString());
       // return 
       res.end(JSON.stringify({
         status: 1,
@@ -215,6 +217,33 @@ app.post('/getRoomsByLanguage', function (req, res) {
 });
 
 
+app.post('/joinRoom', function (req, res) {
+  var userRoomParams = req.body;
+  db.collection('users').updateOne({ _id: new ObjectID(userRoomParams.userid) },
+    {
+      $push: {
+        chats: {
+          chatid: userRoomParams.roomid,
+          type: 'room'
+        }
+      }
+    });
+
+  db.collection('rooms').updateOne({ _id: new ObjectID(userRoomParams.roomid) },
+    {
+      $push: {
+        members: userRoomParams.userid
+      }
+    });
+
+  res.end(JSON.stringify({
+    status: 0,
+    error: "Session has not been started"
+  }));
+
+});
+
+
 app.post('/createRoom', function (req, res) {
   var roomDetails = req.body;
   var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
@@ -255,22 +284,18 @@ function getUserInfoByObjectID(_id, callback) {
 var onlineUsers = {};
 io.on('connection', function (socket) {
 
-  console.log("New connection");
-
 
 
   socket.on('disconnect', function () {
-    console.log("User disconnected :(");
     if (socket && socket.chatinfo && socket.chatinfo.ops && socket.chatinfo.ops.emisor)
       delete onlineUsers[socket.chatinfo.ops.emisor];
+    console.log("Online users: " + Object.keys(onlineUsers).length);
   });
 
 
   socket.on('chat started', function (chatinfo) {
-    console.log('chat started', chatinfo);
     socket.alreadyConnected = true;
     if (chatinfo && chatinfo.ops && chatinfo.ops.emisor && chatinfo.type == 'user') {
-      console.log("CHAT TYPE USER");
       socket.chatinfo = chatinfo;
       onlineUsers[chatinfo.ops.emisor] = {
         socket: socket
@@ -312,25 +337,26 @@ io.on('connection', function (socket) {
               onlineUsers[socket.chatinfo.ops.receptor].socket.emit('chat generated', chatinfo.ops.emisor);
             }
           });
-          socket.emit('previous messages', []);
+          socket.emit('previous messages', {
+            messages: []
+          });
         } else {
           socket.chatid = user.chats[i].chatid;
           db.collection('chats').findOne({ _id: socket.chatid }, function (err, chat) {
             socket.emit('previous messages', chat);
-          })
+          });
         }
       });
 
     } else if (chatinfo && chatinfo.ops && chatinfo.type == 'room') {
       //USER WANTS TO LOAD A ROOM
-      console.log("CHAT TYPE ROOM");
       socket.chatid = chatinfo.ops.chatid;
+      socket.chatinfo = chatinfo;
       onlineUsers[chatinfo.ops.emisor] = {
         socket: socket
       };
-      db.collection('chats').findOne({ _id: socket.chatid }, function (err, chat) {
-        console.log("findOne({ _id: socket.chatid } ", socket.chatid, chat);
-        socket.emit('previous messages', chat);
+      db.collection('chats').findOne({ _id: new ObjectID(socket.chatid) }, function (err, chatRes) {
+        socket.emit('previous messages', chatRes);
       });
     }
   });
@@ -341,7 +367,7 @@ io.on('connection', function (socket) {
       emisor: socket.chatinfo.ops.emisor,
       date: new Date().getTime()
     };
-    db.collection('chats').updateOne({ _id: socket.chatid }, {
+    db.collection('chats').updateOne({ _id: new ObjectID(socket.chatid) }, {
       $push: {
         messages: receivedMessage
       }
@@ -349,4 +375,12 @@ io.on('connection', function (socket) {
     if (socket.chatinfo.ops.receptor in onlineUsers)
       onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
   });
+
+
+  socket.on('start connection', function (userid) {
+    onlineUsers[userid] = {
+      socket: socket
+    };
+    console.log("Online users: " + Object.keys(onlineUsers).length);
+  })
 });

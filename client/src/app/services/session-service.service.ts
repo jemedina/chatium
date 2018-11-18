@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 export class NewUser {
   name: string;
@@ -56,5 +57,10 @@ export class SessionService {
     return this.httpClient.get(this.DOMAIN + this.PORT + '/singOut', { withCredentials: true });
   }
 
-  constructor(private httpClient: HttpClient) { }
+  getCookieUserId() {
+    return this.cookieService.get('userid');
+  }
+
+  constructor(private httpClient: HttpClient,
+    private cookieService: CookieService) { }
 }

@@ -91,8 +91,12 @@
   </div>
 </section>
 
+
 <section class="connect-search-results" *ngIf="searchMode == 'rooms'">
-  <div class="container" style="text-align: center">
+  <div class="container" style="text-align: center" *ngIf="!foundRooms">
+    <h6>Select a language to search rooms</h6>
+  </div>
+  <div class="container" style="text-align: center" *ngIf="foundRooms">
       <div class="roomResultItem">
           <button class="headerButton" mat-stroked-button disabled>
             <div class="row">
@@ -105,7 +109,7 @@
           </button>
       </div>
       <div class="roomResultItem roomItemBody" *ngFor="let room of foundRooms">
-          <button mat-raised-button>
+          <button mat-raised-button (click)="joinRoom(room._id)">
             <div class="row">
                 <div class="rightSeparator" style="width: 25%">{{room.members.length}}</div>
                 <div class="rightSeparator" style="width: 60%">{{room.name}}</div>
