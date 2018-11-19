@@ -29,7 +29,7 @@
       <mat-card>
         <mat-card-subtitle>
           <strong>
-            {{mensaje.emisor}}
+            {{mensaje.emisorName ? mensaje.emisorName : mensaje.emisor}}
           </strong>
           <!--{{new Date() | date :medium}}-->
           {{mensaje.date | date :medium}}

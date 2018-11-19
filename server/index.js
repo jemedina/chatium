@@ -58,6 +58,7 @@ app.post('/login', function (req, res) {
     if (err) throw err;
     if (response) {
       res.cookie('userid', response._id.toString());
+      res.cookie('username', response.name.toString());
       user_id = response._id;
       req.session.userid = user_id;
       stat = 1;
@@ -372,6 +373,9 @@ io.on('connection', function (socket) {
         emisor: socket.chatinfo.ops.emisor,
         date: new Date().getTime()
       };
+      if(socket.chatinfo.type == 'room') {
+        receivedMessage['emisorName'] = socket.chatinfo.ops.emisorName;
+      }
       db.collection('chats').updateOne({ _id: new ObjectID(socket.chatid) }, {
         $push: {
           messages: receivedMessage
@@ -387,7 +391,7 @@ io.on('connection', function (socket) {
               db.collection('rooms').findOne({_id: new ObjectID(socket.chatinfo.ops.roomid)}, (err, roomResult) => {
                 if(roomResult.members) {
                   roomResult.members.forEach(member => {
-                    if(member in onlineUsers && member != socket.chatinfo.ops.emisor) {
+                    if(member in onlineUsers && member != socket.chatinfo.ops.emisor && onlineUsers[member].socket.chatid == socket.chatid) {
                       onlineUsers[member].socket.emit('message received', receivedMessage);
                     }
                   });

@@ -125,6 +125,7 @@ export class ChatComponent implements OnInit {
               ops: {
                 chatid: room['chatid'],
                 emisor: user['_id'],
+                emisorName: user['name'],
                 roomid: room['_id']
               }
             });

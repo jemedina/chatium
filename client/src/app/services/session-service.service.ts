@@ -61,6 +61,11 @@ export class SessionService {
     return this.cookieService.get('userid');
   }
 
+
+  getCookieUserName() {
+    return this.cookieService.get('username');
+  }
+
   constructor(private httpClient: HttpClient,
     private cookieService: CookieService) { }
 }
