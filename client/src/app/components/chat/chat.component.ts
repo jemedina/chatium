@@ -58,7 +58,9 @@ export class ChatComponent implements OnInit {
     private sidebarComponent: SidebarComponent) {
     this.messageReceived = (msg) => {
       if (this.previousLoaded) {
+        console.log("MENSAJE RECIBIDO: ", msg);
         this.mensajes.push(msg);
+        console.log("MENSAJES (messageReceived): ", this.mensajes);
       }
     };
     this.previousMessages = (chat) => {
@@ -86,7 +88,7 @@ export class ChatComponent implements OnInit {
         return;
       }
       this.chatType = map.type;
-      
+
       this.chatService.getConnection().removeEventListener('message received', this.messageReceived);
       if (map.type == this.CHAT_TYPES.USER) {
         this.friendId = map.id;
@@ -123,7 +125,8 @@ export class ChatComponent implements OnInit {
               type: map.type,
               ops: {
                 chatid: room['chatid'],
-                emisor: user['_id']
+                emisor: user['_id'],
+                roomid: room['_id']
               }
             });
             this.chatService.getConnection().on('previous messages', this.previousMessages);
@@ -142,6 +145,7 @@ export class ChatComponent implements OnInit {
         text: this.forma.controls.mensaje.value,
         emisor: this.userId
       });
+      console.log("MENSAJES (enviar): ", this.mensajes);
       this.forma.reset();
     }
   }
