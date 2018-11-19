@@ -46,13 +46,29 @@ export class ChatComponent implements OnInit {
   friendId: any;
   userId: any;
 
+
+  messageReceived: Function;
+  previousMessages: Function;
   constructor(
     private router: ActivatedRoute,
     private searchService: SearchService,
     private chatService: ChatService,
     private routerer: Router,
     private sessionService: SessionService,
-    private sidebarComponent: SidebarComponent) { }
+    private sidebarComponent: SidebarComponent) {
+    this.messageReceived = (msg) => {
+      if (this.previousLoaded) {
+        this.mensajes.push(msg);
+      }
+    };
+    this.previousMessages = (chat) => {
+      if (chat.messages)
+        this.mensajes = chat.messages;
+      console.log(this.mensajes);
+      this.previousLoaded = true;
+    };
+
+  }
 
   ngOnInit() {
     this.mensajes = [];
@@ -63,21 +79,6 @@ export class ChatComponent implements OnInit {
     });
 
 
-    var previousMessages = chat => {
-      if (chat.messages)
-        this.mensajes = chat.messages;
-      console.log(this.mensajes);
-      this.previousLoaded = true;
-    }
-
-    var messageReceived = (msg) => {
-      if (this.previousLoaded) {
-        this.mensajes.push(msg);
-      }
-    };
-
-    this.chatService.getConnection().removeEventListener('message received');
-    this.chatService.getConnection().removeEventListener('previous messages');
 
     this.router.params.subscribe(map => {
       if (map.type != this.CHAT_TYPES.USER && map.type != this.CHAT_TYPES.ROOM) {
@@ -85,6 +86,8 @@ export class ChatComponent implements OnInit {
         return;
       }
       this.chatType = map.type;
+      
+      this.chatService.getConnection().removeEventListener('message received', this.messageReceived);
       if (map.type == this.CHAT_TYPES.USER) {
         this.friendId = map.id;
         this.searchService.getUserInfoById(map.id).subscribe(userInfo => {
@@ -104,8 +107,8 @@ export class ChatComponent implements OnInit {
             };
 
             if (user['state'] == 'ONLINE') {
-              this.chatService.getConnection().on('previous messages', previousMessages);
-              this.chatService.getConnection().on('message received', messageReceived);
+              this.chatService.getConnection().on('previous messages', this.previousMessages);
+              this.chatService.getConnection().on('message received', this.messageReceived);
 
               this.chatService.beginChat(chatconfig);
             }
@@ -123,8 +126,8 @@ export class ChatComponent implements OnInit {
                 emisor: user['_id']
               }
             });
-            this.chatService.getConnection().on('previous messages', previousMessages);
-            this.chatService.getConnection().on('message received', messageReceived);
+            this.chatService.getConnection().on('previous messages', this.previousMessages);
+            this.chatService.getConnection().on('message received', this.messageReceived);
           });
         });
       }
