@@ -33,7 +33,7 @@ export class ChatService {
   }
 
   clearListeners() {
-    //this.socket.removeAllListeners();
+    this.socket.removeAllListeners();
   }
 
   createRoom(roomDetails) {

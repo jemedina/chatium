@@ -62,7 +62,22 @@ export class ChatComponent implements OnInit {
       'mensaje': new FormControl()
     });
 
-    //this.chatService.clearListeners();
+
+    var previousMessages = chat => {
+      if (chat.messages)
+        this.mensajes = chat.messages;
+      console.log(this.mensajes);
+      this.previousLoaded = true;
+    }
+
+    var messageReceived = (msg) => {
+      if (this.previousLoaded) {
+        this.mensajes.push(msg);
+      }
+    };
+
+    this.chatService.getConnection().removeEventListener('message received');
+    this.chatService.getConnection().removeEventListener('previous messages');
 
     this.router.params.subscribe(map => {
       if (map.type != this.CHAT_TYPES.USER && map.type != this.CHAT_TYPES.ROOM) {
@@ -89,24 +104,8 @@ export class ChatComponent implements OnInit {
             };
 
             if (user['state'] == 'ONLINE') {
-              this.chatService.getConnection().on('previous messages', chat => {
-                if (chat.messages)
-                  this.mensajes = chat.messages;
-                console.log(this.mensajes);
-                this.previousLoaded = true;
-                this.sidebarComponent.refreshFriendsList();
-              });
-              this.chatService.getConnection().on('message received', (msg) => {
-                if (this.previousLoaded) {
-                  this.mensajes.push(msg);
-                }
-              });
-
-
-            this.chatService.getConnection().on('new chat created', (msg) => {
-              console.log("Chat generate!!!!!!", msg);
-              this.sidebarComponent.refreshFriendsList();
-            });
+              this.chatService.getConnection().on('previous messages', previousMessages);
+              this.chatService.getConnection().on('message received', messageReceived);
 
               this.chatService.beginChat(chatconfig);
             }
@@ -124,22 +123,8 @@ export class ChatComponent implements OnInit {
                 emisor: user['_id']
               }
             });
-            this.chatService.getConnection().on('previous messages', chat => {
-              if (chat.messages)
-                this.mensajes = chat.messages;
-              console.log(this.mensajes);
-              this.previousLoaded = true;
-              this.sidebarComponent.refreshFriendsList();
-            });
-            this.chatService.getConnection().on('message received', (msg) => {
-              if (this.previousLoaded) {
-                this.mensajes.push(msg);
-              }
-            });
-            this.chatService.getConnection().on('new chat created', (msg) => {
-              console.log("Chat generate!!!!!!", msg);
-              this.sidebarComponent.refreshFriendsList();
-            });
+            this.chatService.getConnection().on('previous messages', previousMessages);
+            this.chatService.getConnection().on('message received', messageReceived);
           });
         });
       }
