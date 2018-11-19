@@ -58,9 +58,8 @@ export class ChatComponent implements OnInit {
     private sidebarComponent: SidebarComponent) {
     this.messageReceived = (msg) => {
       if (this.previousLoaded) {
-        console.log("MENSAJE RECIBIDO: ", msg);
         this.mensajes.push(msg);
-        console.log("MENSAJES (messageReceived): ", this.mensajes);
+        console.log("MENSAJES (messageReceived): ", msg);
       }
     };
     this.previousMessages = (chat) => {
