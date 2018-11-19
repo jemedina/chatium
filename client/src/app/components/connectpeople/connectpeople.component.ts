@@ -104,13 +104,14 @@ export class ConnectpeopleComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      result.members = [this.sessionService.getCookieUserId()];
       console.log('The dialog was close', result);
       if(result && result.name && result.langCode) {
-        this.chatService.createRoom(result).subscribe(res => {
-          console.log("Response ", res);
-          this.sidebarComponent.refreshFriendsList();
-          //MOVE TO CHAT VIEW
+        this.chatService.getConnection().on('my new room', roomInfo => {
+          console.log("NEW ROOM INFO RECEIVED", roomInfo);
+          this.router.navigate(['home', 'chat', 'room', roomInfo['_id']]);
         });
+        this.chatService.createRoom(result);
       }
       
     });

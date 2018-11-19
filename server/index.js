@@ -247,29 +247,7 @@ app.post('/joinRoom', function (req, res) {
 
 app.post('/createRoom', function (req, res) {
   var roomDetails = req.body;
-  var connect_sid = cookieParser.signedCookie(req.cookies['connect.sid'], config.secret);
-  if (connect_sid) {
-    session_store.get(connect_sid, function (error, session) {
-      roomDetails.members = [session.userid];
-      db.collection('chats').insertOne({ messages: [] }, function (error, insertedChat) {
-        roomDetails.chatid = insertedChat.ops[0]._id;
-        db.collection('rooms').insertOne(roomDetails, (error, roomResult) => {
-          if (error) throw error;
-          //PUSH CHAT TO USER CHATS
-          db.collection('users').updateOne({ _id: new ObjectID(session.userid) },
-            {
-              $push: {
-                chats: {
-                  chatid: roomResult.ops[0]._id,
-                  type: 'room'
-                }
-              }
-            });
-          res.end(JSON.stringify(roomResult.ops[0]));
-        });
-      });
-    });
-  }
+
 });
 
 
@@ -365,6 +343,28 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('create room', function (roomDetails, user_id) {
+    db.collection('chats').insertOne({ messages: [] }, function (error, insertedChat) {
+      roomDetails.chatid = insertedChat.ops[0]._id;
+      db.collection('rooms').insertOne(roomDetails, (error, roomResult) => {
+        if (error) throw error;
+        //PUSH CHAT TO USER CHATS
+        db.collection('users').updateOne({ _id: new ObjectID(user_id) },
+          {
+            $push: {
+              chats: {
+                chatid: roomResult.ops[0]._id,
+                type: 'room'
+              }
+            }
+          }, () => {
+            socket.emit('new chat created', ACK);
+            socket.emit('my new room', roomResult.ops[0]);
+          });
+      });
+    });
+  });
+
   socket.on('send message', function (recMessage) {
     if (socket.chatinfo && socket.chatinfo.ops
       && socket.chatinfo.ops.emisor) {
@@ -373,7 +373,7 @@ io.on('connection', function (socket) {
         emisor: socket.chatinfo.ops.emisor,
         date: new Date().getTime()
       };
-      if(socket.chatinfo.type == 'room') {
+      if (socket.chatinfo.type == 'room') {
         receivedMessage['emisorName'] = socket.chatinfo.ops.emisorName;
       }
       db.collection('chats').updateOne({ _id: new ObjectID(socket.chatid) }, {
@@ -381,23 +381,23 @@ io.on('connection', function (socket) {
           messages: receivedMessage
         }
       });
-      if(socket.chatinfo.ops.type == 'user') {
+      if (socket.chatinfo.ops.type == 'user') {
         if (socket.chatinfo.ops.receptor in onlineUsers)
           onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
       } else { //Chat room
-        if(socket.chatinfo && 
-            socket.chatinfo.ops &&
-            socket.chatinfo.ops.roomid) {
-              db.collection('rooms').findOne({_id: new ObjectID(socket.chatinfo.ops.roomid)}, (err, roomResult) => {
-                if(roomResult.members) {
-                  roomResult.members.forEach(member => {
-                    if(member in onlineUsers && member != socket.chatinfo.ops.emisor && onlineUsers[member].socket.chatid == socket.chatid) {
-                      onlineUsers[member].socket.emit('message received', receivedMessage);
-                    }
-                  });
+        if (socket.chatinfo &&
+          socket.chatinfo.ops &&
+          socket.chatinfo.ops.roomid) {
+          db.collection('rooms').findOne({ _id: new ObjectID(socket.chatinfo.ops.roomid) }, (err, roomResult) => {
+            if (roomResult.members) {
+              roomResult.members.forEach(member => {
+                if (member in onlineUsers && member != socket.chatinfo.ops.emisor && onlineUsers[member].socket.chatid == socket.chatid) {
+                  onlineUsers[member].socket.emit('message received', receivedMessage);
                 }
               });
             }
+          });
+        }
       }
     }
   });

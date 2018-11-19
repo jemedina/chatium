@@ -37,7 +37,7 @@ export class ChatService {
   }
 
   createRoom(roomDetails) {
-    return this.httpService.post(this.DOMAIN + this.PORT + "/createRoom", roomDetails, { withCredentials: true });
+    this.socket.emit('create room', roomDetails, this.sessionService.getCookieUserId());
   }
 
   closeChat() {
