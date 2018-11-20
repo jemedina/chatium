@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionService } from 'src/app/services/session-service.service';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,9 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
   title = 'chatium';
 
-  constructor(private router: Router, private sessionService: SessionService) { }
+  constructor(private router: Router, private sessionService: SessionService) {
+    console.log("App started in domain: " + environment.host);
+  }
 
   ngOnInit() {
     this.verifySession();
