@@ -18,7 +18,7 @@ export class ChatComponent implements OnInit {
   @ViewChild('messagesContainer') private messagesContainer: ElementRef;
   forma: FormGroup;
 
-  private chatType: string;
+  chatType: string;
 
   previousLoaded = false;
   userInfo: any;

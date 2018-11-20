@@ -10,7 +10,7 @@ import { SearchService } from 'src/app/services/search.service';
 })
 export class SidebarComponent implements OnInit {
   userInfo: any;
-
+  findName: any;
   chatList = [];
   constructor(private sessionService: SessionService,
     private chatService: ChatService,

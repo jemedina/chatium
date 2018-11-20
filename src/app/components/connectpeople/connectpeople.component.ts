@@ -10,8 +10,8 @@ import { SidebarComponent } from 'src/app/components/shared/sidebar/sidebar.comp
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 export interface NewRoomDialogData {
-  languageCode: string;
-  roomName: string;
+  langCode: string;
+  name: string;
 }
 
 
