@@ -13,41 +13,46 @@
   </div>
 
   <div #messagesContainer class="messages-section">
-
+    <div class="loadingAnimation" *ngIf="!previousLoaded" style="width: 100%; text-align: center">
+      <img src="assets/images/loading-spinner.gif" alt="">
+    </div>
     <!--Diseño para mensajes recibidos 1-1-->
 
-    <span *ngFor="let mensaje of mensajes; let last = last">
-      <div class="received-message message-text" *ngIf="chatType == 'user' && mensaje.emisor == friendId">
-        <mat-card>
-          {{mensaje.text}}
-        </mat-card>
-      </div>
+    <div class="messagesWrapper" *ngIf="previousLoaded">
+      <span *ngFor="let mensaje of mensajes; let last = last">
+        <div class="received-message message-text" *ngIf="chatType == 'user' && mensaje.emisor == friendId">
+          <mat-card>
+            {{mensaje.text}}
+          </mat-card>
+        </div>
 
 
-      <!--Diseño mensaje recibidos rooms-->
-      <div class="received-message message-text" *ngIf="chatType == 'room' && mensaje.emisor != userId">
-      <mat-card>
-        <mat-card-subtitle>
-          <strong>
-            {{mensaje.emisorName ? mensaje.emisorName : mensaje.emisor}}
-          </strong>
-          <!--{{new Date() | date :medium}}-->
-          {{mensaje.date | date :medium}}
-        </mat-card-subtitle>
-        {{mensaje.text}}
-      </mat-card>
+        <!--Diseño mensaje recibidos rooms-->
+        <div class="received-message message-text" *ngIf="chatType == 'room' && mensaje.emisor != userId">
+          <mat-card>
+            <mat-card-subtitle>
+              <strong>
+                {{mensaje.emisorName ? mensaje.emisorName : mensaje.emisor}}
+              </strong>
+              <!--{{new Date() | date :medium}}-->
+              {{mensaje.date | date :medium}}
+            </mat-card-subtitle>
+            {{mensaje.text}}
+          </mat-card>
+        </div>
+
+
+        <!--Diseño para mensaje enviado-->
+        <div class="sent-message message-text" *ngIf="mensaje.emisor == userId">
+          <mat-card>
+            {{mensaje.text}}
+          </mat-card>
+        </div>
+        <span *ngIf="last">{{scrollDownChatContainer()}}</span>
+      </span>
     </div>
-
-
-      <!--Diseño para mensaje enviado-->
-      <div class="sent-message message-text" *ngIf="mensaje.emisor == userId">
-        <mat-card>
-          {{mensaje.text}}
-        </mat-card>
-      </div>
-      <span *ngIf="last">{{scrollDownChatContainer()}}</span>
-    </span>
   </div>
+
 
   <div class="input-form">
     <div class="input-area">

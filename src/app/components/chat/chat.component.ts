@@ -56,6 +56,7 @@ export class ChatComponent implements OnInit {
     private routerer: Router,
     private sessionService: SessionService,
     private sidebarComponent: SidebarComponent) {
+    this.previousLoaded = true;
     this.messageReceived = (msg) => {
       if (this.previousLoaded) {
         this.mensajes.push(msg);
