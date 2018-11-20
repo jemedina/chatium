@@ -8,15 +8,15 @@ import { SessionService } from 'src/app/services/session-service.service'
   providedIn: 'root'
 })
 export class ChatService {
-  readonly PORT = 3000;
-  readonly DOMAIN = 'http://localhost:';
+  readonly PORT = '';
+  readonly DOMAIN = 'https://chatium.herokuapp.com';
 
   private socket: SocketIOClient.Socket;
 
   constructor(private searchService: SearchService,
     private httpService: HttpClient,
     private sessionService: SessionService) {
-    this.socket = io('http://localhost:3000');
+    this.socket = io('https://chatium.herokuapp.com');
   }
 
   initConnection(currentUser) {

@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
     providedIn: 'root'
 })
 export class SearchService {
-    readonly PORT = 3000;
-    readonly DOMAIN = 'http://localhost:';
+    readonly PORT = '';
+    readonly DOMAIN = 'https://chatium.herokuapp.com';
     constructor(private httpClient: HttpClient) { }
 
     getResultsByLanguagePreferences(languagePreferences) {

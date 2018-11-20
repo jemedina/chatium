@@ -18,8 +18,8 @@ export class NewUser {
   providedIn: 'root'
 })
 export class SessionService {
-  readonly PORT = 3000;
-  readonly DOMAIN = 'http://localhost:';
+  readonly PORT = '';
+  readonly DOMAIN = 'https://chatium.herokuapp.com';
 
   MOCK_USER = {
     name: "User",
