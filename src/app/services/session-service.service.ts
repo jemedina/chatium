@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../../environments/environment';
 
 export class NewUser {
   name: string;
@@ -18,8 +19,6 @@ export class NewUser {
   providedIn: 'root'
 })
 export class SessionService {
-  readonly PORT = '';
-  readonly DOMAIN = 'https://chatium.herokuapp.com';
 
   MOCK_USER = {
     name: "User",
@@ -32,7 +31,7 @@ export class SessionService {
 
   beginSession(email: string, passwd: string) {
     console.log(email, passwd);
-    return this.httpClient.post(this.DOMAIN + this.PORT + '/login', {
+    return this.httpClient.post(environment.host + '/login', {
       email: email,
       password: passwd
     }, { withCredentials: true });
@@ -40,21 +39,21 @@ export class SessionService {
 
   createUser(newUser: NewUser) {
     console.log(newUser);
-    return this.httpClient.post(this.DOMAIN + this.PORT + '/regist', newUser, { withCredentials: true });
+    return this.httpClient.post(environment.host+ '/regist', newUser, { withCredentials: true });
   }
 
   setupUserLanguages(userLanguagesConifg) {
     console.log(userLanguagesConifg);
-    return this.httpClient.post(this.DOMAIN + this.PORT + '/setupLanguages', userLanguagesConifg, { withCredentials: true });
+    return this.httpClient.post(environment.host+ '/setupLanguages', userLanguagesConifg, { withCredentials: true });
   }
 
 
   getUserInfo() {
-    return this.httpClient.get(this.DOMAIN + this.PORT + '/getUserInfo', { withCredentials: true });
+    return this.httpClient.get(environment.host+ '/getUserInfo', { withCredentials: true });
   }
 
   signOut() {
-    return this.httpClient.get(this.DOMAIN + this.PORT + '/singOut', { withCredentials: true });
+    return this.httpClient.get(environment.host+ '/singOut', { withCredentials: true });
   }
 
   getCookieUserId() {

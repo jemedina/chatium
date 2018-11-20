@@ -3,20 +3,18 @@ import * as io from 'socket.io-client';
 import { SearchService } from 'src/app/services/search.service';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from 'src/app/services/session-service.service'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  readonly PORT = '';
-  readonly DOMAIN = 'https://chatium.herokuapp.com';
-
   private socket: SocketIOClient.Socket;
 
   constructor(private searchService: SearchService,
     private httpService: HttpClient,
     private sessionService: SessionService) {
-    this.socket = io('https://chatium.herokuapp.com');
+    this.socket = io(environment.host);
   }
 
   initConnection(currentUser) {
@@ -58,7 +56,7 @@ export class ChatService {
       roomid: roomid
     };
 
-    return this.httpService.post(this.DOMAIN + this.PORT + '/joinRoom', data, {withCredentials:true});
+    return this.httpService.post(environment.host + '/joinRoom', data, {withCredentials:true});
   }
 
 }

@@ -15,7 +15,12 @@ const config = {
 var session_store = new MemoryStore({
   checkPeriod: 86400000
 });
-const mongodb_url = 'mongodb://'+process.env.DBUSER+':'+process.env.PASS+'@ds123981.mlab.com:23981/chatium';
+var mongodb_url;
+if(!process.env.DBUSER || !process.env.PASS) {
+  mongodb_url = "mongodb://localhost:27017/";
+} else {
+  mongodb_url = 'mongodb://'+process.env.DBUSER+':'+process.env.PASS+'@ds123981.mlab.com:23981/chatium'
+}
 
 const dbName = 'chatium';
 
