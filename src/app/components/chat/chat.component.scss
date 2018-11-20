@@ -32,6 +32,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .message-text{
+    word-break: break-all;
     font-size: 11pt;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
