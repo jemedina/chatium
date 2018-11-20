@@ -19,7 +19,7 @@
       <input class="form-control" type="text" placeholder="Search" [(ngModel)]="findName">
     </div>
     <div class="friends-list">
-      <div class="friend-item-wrapper" *ngFor="let chat of (chatList.reverse() | friendsFilter: findName) ">
+      <div class="friend-item-wrapper" *ngFor="let chat of (chatList | friendsFilter: findName).reverse() ">
         <a routerLink="chat/{{ chat.isRoom?'room':'user' }}/{{chat.userid}}">
           <mat-card>
             <div class="friend-card">
