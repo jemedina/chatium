@@ -386,9 +386,9 @@ io.on('connection', function (socket) {
         }
       });
       if (socket.chatinfo.ops.type == 'user') {
+        console.log('members online', Object.keys(onlineUsers));
         if (socket.chatinfo.ops.receptor in onlineUsers) {
           onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
-          console.log('members online', Object.keys(onlineUsers));
         }
       } else { //Chat room
         if (socket.chatinfo &&
