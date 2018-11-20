@@ -45,7 +45,6 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'dist/chatium')));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Content-Type', 'application/json');
   res.header("Access-Control-Allow-Credentials", true);
