@@ -385,7 +385,7 @@ io.on('connection', function (socket) {
           messages: receivedMessage
         }
       });
-      if (socket.chatinfo.ops.type == 'user') {
+      if (socket.chatinfo.type == 'user') {
         console.log('members online', Object.keys(onlineUsers));
         if (socket.chatinfo.ops.receptor in onlineUsers) {
           onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
