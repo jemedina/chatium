@@ -369,6 +369,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('send message', function (recMessage) {
+    console.log('send message event', recMessage);
     if (socket.chatinfo && socket.chatinfo.ops
       && socket.chatinfo.ops.emisor) {
       var receivedMessage = {
@@ -385,8 +386,10 @@ io.on('connection', function (socket) {
         }
       });
       if (socket.chatinfo.ops.type == 'user') {
-        if (socket.chatinfo.ops.receptor in onlineUsers)
+        if (socket.chatinfo.ops.receptor in onlineUsers) {
           onlineUsers[socket.chatinfo.ops.receptor].socket.emit('message received', receivedMessage);
+          console.log('members online', Object.keys(onlineUsers));
+        }
       } else { //Chat room
         if (socket.chatinfo &&
           socket.chatinfo.ops &&
