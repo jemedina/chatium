@@ -73,6 +73,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.previousLoaded = true;
+    console.log("ngOnInit this.previousLoaded ", this.previousLoaded)
     this.mensajes = [];
     this.userId = this.sessionService.getCookieUserId();
     console.log(this.userId);
