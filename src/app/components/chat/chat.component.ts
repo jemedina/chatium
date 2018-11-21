@@ -96,8 +96,8 @@ export class ChatComponent implements OnInit {
         this.searchService.getUserInfoById(map.id).subscribe(userInfo => {
           this.userInfo = userInfo;
           this.chatTitle = userInfo['name'];
-          this.previousLoaded = true;
-          console.log("!!! this.previousLoaded = true",this.previousLoaded);
+          this.previousLoaded = false;
+          console.log("!!! this.previousLoaded = false",this.previousLoaded);
           this.sessionService.getUserInfo().subscribe(user => {
             //BEGIN CHAT
             var chatconfig = {
