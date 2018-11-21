@@ -1,10 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { FormControl, FormGroup } from "@angular/forms";
 import { SearchService } from 'src/app/services/search.service';
 import { ChatService } from 'src/app/services/chat.service';
 import { SessionService } from 'src/app/services/session-service.service';
 import { SidebarComponent } from 'src/app/components/shared/sidebar/sidebar.component';
+import { filter, debounceTime } from 'rxjs/operators';
 
 @Component({
   providers: [SidebarComponent],
@@ -69,6 +70,13 @@ export class ChatComponent implements OnInit {
       this.previousLoaded = true;
     };
 
+    this.routerer.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+          this.previousLoaded = false;
+          console.log("NavigationStart ",this.previousLoaded);
+      }
+  });
+
   }
 
   ngOnInit() {
@@ -96,7 +104,6 @@ export class ChatComponent implements OnInit {
         this.searchService.getUserInfoById(map.id).subscribe(userInfo => {
           this.userInfo = userInfo;
           this.chatTitle = userInfo['name'];
-          this.previousLoaded = false;
           console.log("!!! this.previousLoaded = false",this.previousLoaded);
           this.sessionService.getUserInfo().subscribe(user => {
             //BEGIN CHAT
