@@ -72,7 +72,6 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.previousLoaded = true;
     console.log("ngOnInit this.previousLoaded ", this.previousLoaded)
     this.mensajes = [];
     this.userId = this.sessionService.getCookieUserId();
@@ -91,12 +90,14 @@ export class ChatComponent implements OnInit {
       this.chatType = map.type;
 
       this.chatService.getConnection().removeEventListener('message received', this.messageReceived);
+      
       if (map.type == this.CHAT_TYPES.USER) {
         this.friendId = map.id;
         this.searchService.getUserInfoById(map.id).subscribe(userInfo => {
           this.userInfo = userInfo;
           this.chatTitle = userInfo['name'];
-
+          this.previousLoaded = true;
+          console.log("!!! this.previousLoaded = true",this.previousLoaded);
           this.sessionService.getUserInfo().subscribe(user => {
             //BEGIN CHAT
             var chatconfig = {
